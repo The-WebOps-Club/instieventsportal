@@ -9,8 +9,8 @@ var router = express.Router();
 router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', auth.hasAdminRole('convenor'), controller.create);
-router.put('/:id', controller.update);
-router.patch('/:id', controller.update);
+router.put('/:id', auth.hasAdminRole('convenor'), controller.update);
+router.patch('/:id', auth.hasAdminRole('convenor'), controller.update);
 router.delete('/:id', auth.hasAdminRole('convenor'), controller.destroy);
 
 module.exports = router;

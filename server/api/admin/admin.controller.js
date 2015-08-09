@@ -11,6 +11,10 @@ exports.index = function(req, res) {
   });
 };
 
+exports.myTest = function (req, res) {
+  // body...
+}
+
 // Get a single admin
 exports.show = function(req, res) {
   Admin.findById(req.params.id, function (err, admin) {
@@ -30,8 +34,14 @@ exports.create = function(req, res) {
   });
 };
 
+exports.addConvenor = function (req, res) {
+  addConvenorFunc(req, res, function (response) {
+    return response;
+  })
+}
+
 // Adding convenor admin
-exports.addConvenor = function(req, res){
+exports.addConvenorFunc = function(req, res, cb){
   
   // Getting admin role from current admin
   var adminRole = req.user.role;
@@ -55,16 +65,18 @@ exports.addConvenor = function(req, res){
     var adminObje = new Admin(req.body);
     adminObje.role = adminRole;
 
-    if(err) { return handleError(res, err); }
-    if(!admin) { return res.send(404); }
-    if (admin.length < 1){
+    if(err) { cb(handleError(res, err)); }
+    else if(!admin) { return res.send(404); }
+    else if (admin.length < 1){
       Admin.create(adminObje, function(err, admin) {
         if(err) { 
           response = handleError(res, err);
-          return response; 
+          cb(response); 
         }
-        response = res.json(201, admin);
-        return response;
+        else{
+          response = res.json(201, admin);
+          cb(response);
+        }
       });
     } else {
       adminObje = new Admin(admin[0]);

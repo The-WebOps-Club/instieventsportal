@@ -2,8 +2,9 @@
 
 var _ = require('lodash');
 var Club = require('./club.model');
+var adController=require('../admin/admin.controller');
 
-// Get list of clubs
+ // Get list of clubs
 exports.index = function(req, res) {
   Club.find(function (err, clubs) {
     if(err) { return handleError(res, err); }
@@ -24,23 +25,30 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   req.body.category = req.user.role.category;
   Club.create(req.body, function(err, club) {
+    adController.addConvenor(club.convenors,res);
     if(err) { return handleError(res, err); }
     return res.json(201, club);
   });
 };
 
 // Updates an existing club in the DB.
-exports.update = function(req, res) {
-  req.body.updatedOn = Date();
+exports.update = function(req, res) {  req.body.updatedOn = Date()
   if(req.body._id) { delete req.body._id; }
+  req.body.category = req.user.role.category;
   Club.findById(req.params.id, function (err, club) {
     if (err) { return handleError(res, err); }
     if(!club) { return res.send(404); }
-    var updated = _.merge(club, req.body);
-    updated.save(function (err) {
+    if(req.user.role.club==club._id)
+    {
+     req.body.category = req.user.role.category;
+     var updated = _.merge(club, req.body);
+     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(200, club);
-    });
+      return res.json(200, club);     
+                                 });
+    }
+    else
+     return res.json(403, {message: 'You are not authorised to update this club information'}); 
   });
 };
 
