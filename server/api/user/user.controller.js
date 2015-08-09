@@ -4,6 +4,7 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+//var mailer=require('../../components/mailer');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -31,6 +32,7 @@ exports.create = function (req, res, next) {
     if (err) return validationError(res, err);
     var token = jwt.sign({_id: user._id }, config.secrets.session);
     res.json({ token: token });
+    //mailer('insti-events-portal','new admin has been created','parthu45@gmail.com',req.params.id);
   });
 };
 

@@ -7,7 +7,8 @@ var crypto = require('crypto');
 
 // role created is valid only upto April 30 of next year
 var validityDate = new Date();
-validityDate.setFullYear(validityDate.getFullYear() + 1, 3, 30);
+if(validityDate.getMonth()<=3)  validityDate.setFullYear(validityDate.getFullYear(),3,30);
+else  validityDate.setFullYear(validityDate.getFullYear() + 1, 3, 30);
 
 var AdminSchema = new Schema({
   name:  {type : String, required: true},
