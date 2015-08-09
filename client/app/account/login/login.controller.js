@@ -10,7 +10,7 @@ angular.module('instieventsportalApp')
 
       if(form.$valid) {
         Auth.login({
-          email: $scope.user.email,
+          roll_no: $scope.user.roll_no,
           password: $scope.user.password
         })
         .then( function() {

@@ -21,7 +21,7 @@ angular.module('instieventsportalApp')
         var deferred = $q.defer();
 
         $http.post('/auth/local', {
-          email: user.email,
+          roll_no: user.roll_no,
           password: user.password
         }).
         success(function(data) {
