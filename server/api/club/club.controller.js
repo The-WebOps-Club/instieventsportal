@@ -5,6 +5,7 @@ var Club = require('./club.model');
 var adController=require('../admin/admin.controller');
 
  // Get list of clubs
+
 exports.index = function(req, res) {
   Club.find(function (err, clubs) {
     if(err) { return handleError(res, err); }

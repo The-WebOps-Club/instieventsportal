@@ -36,6 +36,7 @@ exports.create = function(req, res) {
 // Updates an existing event in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
+  req.body.category = req.user.role.category;
   Event.findById(req.params.id, function (err, event) {
     if (err) { return handleError(res, err); }
     if(!event) { return res.send(404); }
