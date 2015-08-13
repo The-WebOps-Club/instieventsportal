@@ -8,6 +8,11 @@ var ConvenorSchema = new Schema({
   phoneNumber: { type : String, required : true },
 });
 
+var SubscriptionSchema = new Schema({
+  club : { type : Schema.Types.ObjectId, ref : 'Club', required : true },
+  user : { type : Schema.Types.ObjectId, ref : 'User' }
+});
+
 var ClubSchema = new Schema({
   name: { type : String, required : true },
   convenors: [ConvenorSchema],
@@ -18,3 +23,4 @@ var ClubSchema = new Schema({
 });
 
 module.exports = mongoose.model('Club', ClubSchema);
+module.exports = mongoose.model('Subscribe', SubscriptionSchema);

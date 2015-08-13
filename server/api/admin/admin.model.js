@@ -14,7 +14,7 @@ var AdminSchema = new Schema({
   name:  {type : String, required: true},
   rollNumber: {type : String, required: true},
   salt : String,
-  hashedPassword: String,
+  hashedPassword: {type : String, required: true},
   role: {
   	name : { type: String, required : true },
   	category : { type: String, required : true },
@@ -70,14 +70,14 @@ AdminSchema
     return rollNumber.length;
   }, 'rollNumber cannot be blank');
 
-// Validate empty password
-AdminSchema
-  .path('hashedPassword')
-  .validate(function(hashedPassword) {
-  	// if ((this._password == null) || (this._password == ""))  return 0;
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return hashedPassword.length;
-  }, 'Password cannot be blank');
+// // Validate empty password
+// AdminSchema
+//   .path('hashedPassword')
+//   .validate(function(hashedPassword) {
+//   	// if ((this._password == null) || (this._password == ""))  return 0;
+//     if (authTypes.indexOf(this.provider) !== -1) return true;
+//     return hashedPassword.length;
+//   }, 'Password cannot be blank');
 
 // Validate rollNumber is not taken
 AdminSchema
