@@ -33,6 +33,7 @@ exports.create = function(req, res) {
 //Subscribe to a club
 exports.subscribe = function(req,res) {
   req.body.user = req.user;
+  req.body.club = req.params.id;
   var query = { user : req.body.user , club : req.body.club};
   Subscribe.find(query, function (err , subscribe) {
     if(err) { return handleError(res, err); }
@@ -47,27 +48,23 @@ exports.subscribe = function(req,res) {
     }
   });
 };
-  
-
-exports.show = function(req, res) {
-  Admin.findById(req.params.id, function (err, admin) {
-    if(err) { return handleError(res, err); }
-    if(!admin) { return res.send(404); }
-    return res.json(admin);
-  })
-  .populate('role.club', 'name');
-  ;
-};
 
 //Unsubscribe from a club
 exports.unsubscribe = function(req,res) {
-  Subscribe.findById(req.params.id, function (err, subscribe) {
+  req.body.user = req.user;
+  req.body.club = req.params.id;
+  var query = { user : req.body.user , club : req.body.club};
+  Subscribe.find(query, function (err , subscribe) {
     if(err) { return handleError(res, err); }
-    if(!subscribe) { return res.send(404); }
-    subscribe.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.send(204);
-    });
+    if( subscribe.length < 1) {
+      return res.send(404);
+    }
+    else {
+      subscribe[0].remove( function(err) {
+        if (err) { return handleError(res, err); }
+        return res.send(204);
+      }); 
+    }
   });
 };
 
