@@ -10,6 +10,8 @@ router.get('/:id', controller.show);
 router.post('/', auth.hasAdminRole('sec'), controller.create);
 router.post('/convenor/:id', auth.hasAdminRole('convenor'), controller.updateConvenor);
 router.put('/:id', auth.hasAdminRole('convenor'), controller.update);
+router.post('/subscribe', auth.isAuthenticated(), controller.subscribe);
+router.delete('/unsubscribe/:id', controller.unsubscribe);
 // router.patch('/:id', controller.update);
 // router.delete('/:id', controller.destroy);
 
