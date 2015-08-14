@@ -61,12 +61,18 @@ UserSchema
  */
 
 // Validate empty rollNumber
+<<<<<<< HEAD
+=======
 /*
+>>>>>>> 42a55238d848a4942349c3217aa4956e8ae1ec65
 UserSchema
   .path('rollNumber')
   .validate(function(rollNumber) {
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return rollNumber.length;
+<<<<<<< HEAD
+  }, 'rollNumber cannot be blank');
+=======
   }, 'rollNumber cannot be blank');*/
 
 //validate empty name
@@ -84,6 +90,7 @@ UserSchema
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return hostel.length;
   }, 'hostelName cannot be blank');*/
+>>>>>>> 42a55238d848a4942349c3217aa4956e8ae1ec65
 
 // Validate empty password
 UserSchema

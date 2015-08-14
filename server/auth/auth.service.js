@@ -28,8 +28,11 @@ function isAuthenticated() {
     .use(function(req, res, next) {
       User.findById(req.user._id, function (err, user) {
         if (err) return next(err);
-        if (!user) return res.send(401);
-
+        if (!user)
+        {
+          isAdmin(); 
+         // return res.send(401);
+         }
         req.user = user;
         next();
       });

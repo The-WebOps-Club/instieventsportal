@@ -2,6 +2,8 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
+
 
 var CoordSchema = new Schema({
 	name : { type : String, required : true },
@@ -23,4 +25,5 @@ var EventSchema = new Schema({
 	coords : [CoordSchema]
 });
 
+EventSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Event', EventSchema);

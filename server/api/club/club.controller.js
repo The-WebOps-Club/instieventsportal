@@ -2,8 +2,9 @@
 
 var _ = require('lodash');
 var Club = require('./club.model');
+ // Get list of clubs
+var Subscribe = require('./club.model');
 
-// Get list of clubs
 exports.index = function(req, res) {
   Club.find(function (err, clubs) {
     if(err) { return handleError(res, err); }
@@ -23,24 +24,68 @@ exports.show = function(req, res) {
 // Creates a new club in the DB.
 exports.create = function(req, res) {
   req.body.category = req.user.role.category;
-  Club.create(req.body, function(err, club) {
+  Club.create(req.body, function (err, club) {
     if(err) { return handleError(res, err); }
     return res.json(201, club);
   });
 };
 
+//Subscribe to a club
+exports.subscribe = function(req,res) {
+  req.body.user = req.user;
+  req.body.club = req.params.id;
+  var query = { user : req.body.user , club : req.body.club};
+  Subscribe.find(query, function (err , subscribe) {
+    if(err) { return handleError(res, err); }
+    if( subscribe.length < 1) {
+      Subscribe.create( req.body, function (err, subscribe) {
+        if(err) { return handleError(res, err); }
+        return res.json(201, subscribe);
+      });
+    }
+    else {
+      return res.json(200, subscribe[0]);
+    }
+  });
+};
+
+//Unsubscribe from a club
+exports.unsubscribe = function(req,res) {
+  req.body.user = req.user;
+  req.body.club = req.params.id;
+  var query = { user : req.body.user , club : req.body.club};
+  Subscribe.find(query, function (err , subscribe) {
+    if(err) { return handleError(res, err); }
+    if( subscribe.length < 1) {
+      return res.send(404);
+    }
+    else {
+      subscribe[0].remove( function(err) {
+        if (err) { return handleError(res, err); }
+        return res.send(204);
+      }); 
+    }
+  });
+};
+
 // Updates an existing club in the DB.
-exports.update = function(req, res) {
-  req.body.updatedOn = Date();
+exports.update = function(req, res) {  req.body.updatedOn = Date()
   if(req.body._id) { delete req.body._id; }
+  req.body.category = req.user.role.category;
   Club.findById(req.params.id, function (err, club) {
     if (err) { return handleError(res, err); }
     if(!club) { return res.send(404); }
-    var updated = _.merge(club, req.body);
-    updated.save(function (err) {
+    if(req.user.role.club==club._id)
+    {
+     req.body.category = req.user.role.category;
+     var updated = _.merge(club, req.body);
+     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(200, club);
-    });
+      return res.json(200, club);     
+                                 });
+    }
+    else
+     return res.json(403, {message: 'You are not authorised to update this club information'}); 
   });
 };
 
