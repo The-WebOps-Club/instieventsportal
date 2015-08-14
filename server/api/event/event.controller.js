@@ -2,12 +2,22 @@
 
 var _ = require('lodash');
 var Event = require('./event.model');
+var mongoosePaginate = require('mongoose-paginate');
 
 // Get list of events
 exports.index = function(req, res) {
   Event.find(function (err, events) {
     if(err) { return handleError(res, err); }
     return res.json(200, events);
+  })
+  .populate('club', 'name');
+  ;
+};
+
+exports.refresh = function(req,res) {
+  Event.find({updatedOn:{$gt: req.body.time}}, function(err,events){
+    if(err) { return handleError(res,err); }
+    return res.json(200,events);
   })
   .populate('club', 'name');
   ;
@@ -33,9 +43,21 @@ exports.create = function(req, res) {
   });
 };
 
+exports.limitedView = function (req, res) {
+  Event.paginate({}, {
+  page: req.params.pageNumber, 
+  limit: req.params.limit,
+  sortBy: Event.time
+},function(err, results, pageCount, itemCount){
+  console.log(results);
+  return res.json(200,results);
+} );
+}
+
 // Updates an existing event in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
+  req.body.category = req.user.role.category;
   Event.findById(req.params.id, function (err, event) {
     if (err) { return handleError(res, err); }
     if(!event) { return res.send(404); }

@@ -6,11 +6,13 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/', controller.index);
-router.get('/:id', controller.show);
+router.get('/', auth.isAuthenticated() ,controller.index);
+router.get('/:id',  auth.isAuthenticated() ,controller.show);
+router.get('/:pageNumber/:limit',  auth.isAuthenticated() ,controller.limitedView);
+router.post('/refresh',  auth.isAuthenticated() ,controller.refresh);
 router.post('/', auth.hasAdminRole('convenor'), controller.create);
-router.put('/:id', controller.update);
-router.patch('/:id', controller.update);
+router.put('/:id', auth.hasAdminRole('convenor'), controller.update);
+router.patch('/:id', auth.hasAdminRole('convenor'), controller.update);
 router.delete('/:id', auth.hasAdminRole('convenor'), controller.destroy);
 
 module.exports = router;

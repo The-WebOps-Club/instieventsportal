@@ -18,6 +18,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/scoreboard/scoreboard.socket').register(socket);
   require('../api/event/event.socket').register(socket);
   require('../api/club/club.socket').register(socket);
   require('../api/admin/admin.socket').register(socket);
