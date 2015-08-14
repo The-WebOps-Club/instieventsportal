@@ -122,10 +122,6 @@ AdminSchema.methods = {
    * @api public
    */
   authenticate: function(plainText) {
-    console.log("Authenticate");
-    console.log(plainText);
-    console.log(this.encryptPassword(plainText));
-    console.log(this.hashedPassword);
     return this.encryptPassword(plainText) === this.hashedPassword;
   },
 

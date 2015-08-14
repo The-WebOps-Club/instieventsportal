@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/instieventsportal-dev'
   },
 
-  seedDB: true
+  seedDB: false
 };
