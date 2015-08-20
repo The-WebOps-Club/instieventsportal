@@ -70,13 +70,13 @@ exports.show = function(req, res) {
   ;
 };
 
-// Creates a new admin in the DB.
-exports.create = function(req, res) {
-  Admin.create(req.body, function(err, admin) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, admin);
-  });
-};
+// // Creates a new admin in the DB.
+// exports.create = function(req, res) {
+//   Admin.create(req.body, function(err, admin) {
+//     if(err) { return handleError(res, err); }
+//     return res.json(201, admin);
+//   });
+// };
 
 exports.addConvenor = function(req,res){
   // Getting admin role from current admin

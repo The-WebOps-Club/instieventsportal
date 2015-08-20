@@ -3,9 +3,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var HostelSchema = new Schema({
-  name: {type: String,required : true, unique: true}
-});
 
 
 var ScoreboardSchema = new Schema({
@@ -19,5 +16,10 @@ var ScoreboardSchema = new Schema({
   ]
 });
 
-module.exports = mongoose.model('Hostel', HostelSchema);
-module.exports = mongoose.model('Scoreboard', ScoreboardSchema);
+var HostelSchema = new Schema({
+  name: { type: String, required : true }
+});
+
+
+module.exports = mongoose.model('Scoreboard', HostelSchema);
+module.exports = mongoose.model('Hostel', ScoreboardSchema);

@@ -4,13 +4,13 @@
 
 'use strict';
 
-var Club = require('./club.model');
+var ClubSchema = require('./club.model');
 
 exports.register = function(socket) {
-  Club.schema.post('save', function (doc) {
+  ClubSchema.Club.schema.post('save', function (doc) {
     onSave(socket, doc);
   });
-  Club.schema.post('remove', function (doc) {
+  ClubSchema.Club.schema.post('remove', function (doc) {
     onRemove(socket, doc);
   });
 }

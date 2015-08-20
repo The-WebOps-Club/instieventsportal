@@ -1,7 +1,8 @@
 'use strict';
 
 var _ = require('lodash');
-var Hostel = require('./scoreboard.model')
+var Hostel = require('./scoreboard.model');
+
 var Scoreboard = require('./scoreboard.model');
 var Hostels=["Tapti","Pampa","Mahanadhi","Mandakini","Sindhu","Ganga","Brahmaputra","Tamraparani","Godavari","Narmada","Saraswathi","Krishna","Cauvery","Tunga","Badra","Jamuna","Alakanada","Sharavati","Sarayu","Sabarmati"];
 
@@ -61,13 +62,14 @@ exports.setup = function(req, res) {
   var i;
   for(i=0;i<Hostels.length;i++)
 {
-  Hostel.create({name:Hostels[i]}, function(err, scoreboard) {
+  // console.log("0");
+  req.body.name = Hostels[i];
+  Hostel.create( req.body , function (err, hostel) {
     if(err) { return handleError(res, err); }
-    return res.status(201).json(scoreboard);
+    return res.status(201).json(hostel);
   });
 }
 };
-
 function handleError(res, err) {
   return res.status(500).send(err);
 }
