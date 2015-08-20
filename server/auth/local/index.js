@@ -39,7 +39,7 @@ router.post('/admin/', function(req, res, next) {
     if (error) return res.json(401, error);
     if (!user) return res.json(404, {message: 'Something went wrong, please try again.'});
     var visibleUser = user;
-    visibleUser.hashedPassword = undefined;
+    visibleUser.hashedPassword =  undefined;
     visibleUser.salt = undefined;
     var token = auth.signAdminToken(user._id, user.role);
     res.json({token: token, user : visibleUser});

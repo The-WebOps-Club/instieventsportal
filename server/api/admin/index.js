@@ -5,8 +5,8 @@ var controller = require('./admin.controller');
 var auth = require('../../auth/auth.service');
 var router = express.Router();
 
-router.get('/', controller.index);
-router.get('/:id', controller.show);
+// router.get('/', controller.index);
+// router.get('/:id', controller.show);
 // router.post('/', auth.isAdmin(), controller.create);
 router.post('/addConvenor', auth.hasAdminRole('core'), controller.addConvenor);
 router.post('/sec/:role', auth.hasAdminRole('sec'), controller.addSecRole);
