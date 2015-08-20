@@ -12,8 +12,10 @@ var ScoreboardSchema = new Schema({
   category: String,
   scorecard:
   [
-  	hostelId : { type:Schema.Types.ObjectId, ref:'HostelSchema', unique : true },
-  	score : { type: String,required:true,default:0}
+  	{
+  		hostelId : { type:Schema.Types.ObjectId, ref:'HostelSchema', unique : true },
+  		score : { type: String,required:true,default:0}
+  	}
   ]
 });
 
