@@ -20,8 +20,12 @@ var ClubSchema = new Schema({
   description: { type : String },
   category: { type : String, required : true },
   updatedOn: { type: Date, default : Date() },
-  createdOn: { type: Date, default : Date() }
+  createdOn: { type: Date, default : Date() },
+  active: { type : Boolean, default : true }
 });
 
-module.exports = mongoose.model('Club', ClubSchema);
-module.exports = mongoose.model('Subscribe', SubscriptionSchema);
+var Club = mongoose.model('Club', ClubSchema);
+var Subscribe = mongoose.model('Subscribe', SubscriptionSchema);
+
+exports.Club = Club;
+exports.Subscribe = Subscribe;

@@ -6,9 +6,9 @@ var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
-  name: {type:String,required:true},
-  hostel: {type:String,required:true},
-  rollNumber: { type: String ,required:true},
+  name: {type : String, required : true},
+  hostel: {type : String, required : true},
+  rollNumber: { type : String , required : true},
   role: {
     type: String,
     default: 'user'
