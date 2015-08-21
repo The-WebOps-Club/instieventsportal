@@ -14,10 +14,10 @@ exports.setup = function (User, config) {
       }, function(err, user) {
         if (err) return done(err);
         if (!user) {
-          return done(null, false, { message: 'This rollNumber is not registered.' });
+          return done(null, false, { error : 404, message: 'This rollNumber is not registered.' });
         }
         if (!user.authenticate(password)) {
-          return done(null, false, { message: 'This password is not correct.' });
+          return done(null, false, { error : 403, message: 'This password is not correct.' });
         }
         return done(null, user);
       });

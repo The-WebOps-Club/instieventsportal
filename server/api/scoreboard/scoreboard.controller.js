@@ -1,75 +1,92 @@
 'use strict';
-
+var mongoose = require('mongoose');
 var _ = require('lodash');
-var Hostel = require('./scoreboard.model');
+var scoreboardss = require('./scoreboard.model');
 
-var Scoreboard = require('./scoreboard.model');
 var Hostels=["Tapti","Pampa","Mahanadhi","Mandakini","Sindhu","Ganga","Brahmaputra","Tamraparani","Godavari","Narmada","Saraswathi","Krishna","Cauvery","Tunga","Badra","Jamuna","Alakanada","Sharavati","Sarayu","Sabarmati"];
+var cat=["lit","tech","sports"];
 
 // Get list of scoreboards
 exports.index = function(req, res) {
-  Scoreboard.find(function (err, scoreboards) {
+  scoreboardss.Scoreboard.find(function (err, scoreboards) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(scoreboards);
   });
 };
 
-// Get a single scoreboard
-exports.show = function(req, res) {
-  Scoreboard.findById(req.params.id, function (err, scoreboard) {
-    if(err) { return handleError(res, err); }
-    if(!scoreboard) { return res.status(404).send('Not Found'); }
-    return res.json(scoreboard);
-  });
-};
-
-
-// Creates a new scoreboard in the DB.
-exports.create = function(req, res) {
-  Scoreboard.create(req.body, function(err, scoreboard) {
-    if(err) { return handleError(res, err); }
-    return res.status(201).json(scoreboard);
-  });
-};
 
 // Updates an existing scoreboard in the DB.
 exports.update = function(req, res) {
+  var i,j;
   if(req.body._id) { delete req.body._id; }
-  Scoreboard.findById(req.params.id, function (err, scoreboard) {
+  scoreboardss.Scoreboard.find({category : req.user.role.category }, function (err, scoreboard) {
     if (err) { return handleError(res, err); }
     if(!scoreboard) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(scoreboard, req.body);
+   for(j=0;j<req.body.results.length;j++) 
+   {  
+     for(i=0;i<Hostels.length;i++)
+     {
+      if(scoreboard[0].scorecard[i].hostelId==req.body.results[j].hostelId)
+      {
+        scoreboard[0].scorecard[i].score+=req.body.results[j].score;
+      }
+     }
+   }
+     var updated = scoreboard[0];
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(scoreboard);
     });
-  });
-};
 
-// Deletes a scoreboard from the DB.
-exports.destroy = function(req, res) {
-  Scoreboard.findById(req.params.id, function (err, scoreboard) {
-    if(err) { return handleError(res, err); }
-    if(!scoreboard) { return res.status(404).send('Not Found'); }
-    scoreboard.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.status(204).send('No Content');
-    });
   });
 };
 
 exports.setup = function(req, res) {
-  var i;
+  var i,j=0;
+ scoreboardss.Scoreboard.find(function (err,scorescore)
+ { 
+  if(scorescore.length<1)
+  {
+ mongoose.connection.db.dropCollection('scoreboards', function(err, result) {});
   for(i=0;i<Hostels.length;i++)
-{
-  // console.log("0");
-  req.body.name = Hostels[i];
-  Hostel.create( req.body , function (err, hostel) {
+ {
+   scoreboardss.Hostel.create({name:Hostels[i]}, function (err,hostel) {
     if(err) { return handleError(res, err); }
-    return res.status(201).json(hostel);
+    // return res.status(201).json(hostel);
+    scoreboardss.Scorecard.create({hostelId:hostel._id}, function (err,scorecard) {
+      j++;
+    if(err) { return handleError(res, err); }
+    // return res.status(201).json(hostel); 
+     
   });
-}
+  });
+ }
+ 
+
+   while(j!=Hostels.length) {require('deasync').sleep(10);}
+ 
+ j=2;
+scoreboardss.Scorecard.find(function (err,scorecards){
+  
+   scoreboardss.Scoreboard.create({category : "lit" ,scorecard : scorecards},function (err,scoreboard){
+   });
+   scoreboardss.Scoreboard.create({category : "tech" ,scorecard : scorecards},function (err,scoreboard){
+   });
+   scoreboardss.Scoreboard.create({category : "sports" ,scorecard : scorecards},function (err,scoreboard){
+    j=5;
+   });
+
+});
+
+
+ res.status(201).json({'message':'The initialisation is over'});
+ }
+ else
+  res.status(201).json({'message':'you have done initialisation before itself'});
+});
 };
+
+
 function handleError(res, err) {
   return res.status(500).send(err);
 }

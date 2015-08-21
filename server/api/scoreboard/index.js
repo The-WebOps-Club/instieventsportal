@@ -8,9 +8,10 @@ var router = express.Router();
 
 router.get('/', controller.index);
 // router.get('/:id', controller.show);
-router.post('/', controller.create);
+// router.post('/',auth.hasAdminRole('sec'), controller.create);
 router.get('/initialsetup',auth.hasAdminRole('sec'),controller.setup);
-// router.put('/:id', controller.update);
+// router.get('/initialsetupFinal',auth.hasAdminRole('sec'),controller.setupFinal);
+router.put('/',auth.hasAdminRole('sec'), controller.update);
 // router.patch('/:id', controller.update);
 // router.delete('/:id', controller.destroy);
 

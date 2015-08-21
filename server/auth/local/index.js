@@ -15,17 +15,28 @@ var validationError = function(res, err) {
 router.post('/', function(req, res, next) {
   passport.authenticate('user-local', function (err, user, info) {
     var error = err || info;
-     // if (error) return res.json(401, error);
-
-    if (!user) 
-    { 
-       user = new User(req.body);
+     if (error) {
+      if (error.error == 404){
+        user = new User(req.body);
        user.provider = 'local';
        user.role = 'user';
        user.save(function(err, user) {
         if (err) return validationError(res, err);
       });
+      }
+      else
+      return res.json(401, error);
     }
+
+    // if (!user) 
+    // { 
+    //    user = new User(req.body);
+    //    user.provider = 'local';
+    //    user.role = 'user';
+    //    user.save(function(err, user) {
+    //     if (err) return validationError(res, err);
+    //   });
+    // }
     // if (!user) return res.json(404, {message: 'Something went wrong, please try again.'});
 
     var token = auth.signToken(user._id, user.role);

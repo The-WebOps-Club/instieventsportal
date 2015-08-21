@@ -34,7 +34,7 @@ var createAdmin = function (adminRole,req,res){
       Admin.update(query, { role : adminRole }, function(err, numberAffected, rawResponse) {
         if (err) { return handleError(res, err); }
         response = res.json(200, adminObje);
-        //mailing the details
+        // mailing the details
         mailer('insti-events-portal','you have been added as an admin and your password is '+req.body.password,req.body.rollNumber+'@smail.iitm.ac.in','litsoc-',function cb(err,info)
         {
           if(err)
@@ -79,6 +79,7 @@ exports.show = function(req, res) {
 // };
 
 exports.addConvenor = function(req,res){
+
   // Getting admin role from current admin
   var adminRole = req.user.role;
    
