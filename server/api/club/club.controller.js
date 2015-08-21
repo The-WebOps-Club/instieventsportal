@@ -2,9 +2,8 @@
 
 var _ = require('lodash');
 var ClubSchema = require('./club.model');
- // Get list of clubs
-//var ClubSchema.Subscribe = require('./club.model');
 
+ // Get list of clubs
 exports.index = function(req, res) {
   ClubSchema.Club.find(function (err, clubs) {
     if(err) { return handleError(res, err); }
@@ -140,4 +139,4 @@ exports.changeStatus = function(req, res) {
 
 function handleError(res, err) {
   return res.send(500, err);
-}
+};

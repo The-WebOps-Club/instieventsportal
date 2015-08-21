@@ -4,13 +4,13 @@
 
 'use strict';
 
-var Scoreboard = require('./scoreboard.model');
+var ScoreboardSchema = require('./scoreboard.model');
 
 exports.register = function(socket) {
-  Scoreboard.schema.post('save', function (doc) {
+  ScoreboardSchema.Scoreboard.schema.post('save', function (doc) {
     onSave(socket, doc);
   });
-  Scoreboard.schema.post('remove', function (doc) {
+  ScoreboardSchema.Scoreboard.schema.post('remove', function (doc) {
     onRemove(socket, doc);
   });
 }

@@ -83,6 +83,21 @@ exports.destroy = function(req, res) {
   });
 };
 
+exports.addScore = function(req, res) {
+  Event.findById(req.params.id, function (err, event) {
+    if(err) { return handleError(res, err); }
+    if(!event) { return res.send(404); }
+    var updatedEvent = new Event(event);
+    updatedEvent.result = req.body;
+    var response;
+    Event.update( { _id : req.params.id }, { result : req.body }, function(err, numberAffected, rawResponse) {
+      if (err) { return handleError(res, err); }
+      response = res.json(200,updatedEvent);
+    });
+    return response;
+  });
+}
+ 
 function handleError(res, err) {
   return res.send(500, err);
 }

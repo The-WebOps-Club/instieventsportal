@@ -124,6 +124,28 @@ exports.update = function(req, res) {
   });
 };
 
+//Change Password
+exports.changePassword = function(req, res, next) {
+  var adminId = req.params.id;
+  var oldPass = String(req.body.oldPassword);
+  var newPass = String(req.body.newPassword);
+
+  Admin.findById(adminId, function (err, admin) {
+    if(err) { return handleError(res, err); }
+    if(!admin) { return res.send(404); }
+    if(admin.authenticate(oldPass)) {
+      admin.password = newPass;
+      admin.save(function(err) {
+        if (err) return validationError(res, err);
+        res.send(200);
+      });
+    } else {
+      res.send(403);
+    }
+  });
+};
+
+
 // Deletes a admin from the DB.
 exports.destroy = function(req, res) {
   Admin.findById(req.params.id, function (err, admin) {

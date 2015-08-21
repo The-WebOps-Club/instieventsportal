@@ -80,7 +80,7 @@ exports.update = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-  var userId = req.user._id;
+  var userId = req.params.id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
