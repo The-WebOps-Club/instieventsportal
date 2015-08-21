@@ -1,32 +1,31 @@
 'use strict';
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
-var authTypes = ['github', 'twitter', 'facebook', 'google'];
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 var crypto = require('crypto');
+var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
-// role created is valid only upto April 30 of next year
-var validityDate = new Date();
-if(validityDate.getMonth()<=3)  validityDate.setFullYear(validityDate.getFullYear(),3,30);
-else  validityDate.setFullYear(validityDate.getFullYear() + 1, 3, 30);
-
-var AdminSchema = new Schema({
-  name:  {type : String, required: true},
-  rollNumber: {type : String, required: true},
-  salt : String,
-  hashedPassword: {type : String, required: true},
+var UserSchema = new Schema({
+  name: {type:String,required:true},
+  hostel: {type:String,required:true},
+  rollNumber: { type: String ,required:true},
   role: {
-  	name : { type: String, required : true },
-  	category : { type: String, required : true },
-  	expiryDate : { type: Date, required : true , default : validityDate},
-    club : { type: Schema.Types.ObjectId, ref: 'Club' }
-  }
+    type: String,
+    default: 'user'
+  },
+  hashedPassword: String,
+  provider: String,
+  salt: String,
+  facebook: {},
+  twitter: {},
+  google: {},
+  github: {}
 });
 
 /**
  * Virtuals
  */
-AdminSchema
+UserSchema
   .virtual('password')
   .set(function(password) {
     this._password = password;
@@ -38,7 +37,7 @@ AdminSchema
   });
 
 // Public profile information
-AdminSchema
+UserSchema
   .virtual('profile')
   .get(function() {
     return {
@@ -48,7 +47,7 @@ AdminSchema
   });
 
 // Non-sensitive info we'll be putting in the token
-AdminSchema
+UserSchema
   .virtual('token')
   .get(function() {
     return {
@@ -62,25 +61,47 @@ AdminSchema
  */
 
 // Validate empty rollNumber
-AdminSchema
+<<<<<<< HEAD
+=======
+/*
+>>>>>>> 42a55238d848a4942349c3217aa4956e8ae1ec65
+UserSchema
   .path('rollNumber')
   .validate(function(rollNumber) {
-  	if (rollNumber == null)  return 0;
-    if (authTypes.indexOf(this.provider) !== -1 ) return true;
+    if (authTypes.indexOf(this.provider) !== -1) return true;
     return rollNumber.length;
+<<<<<<< HEAD
   }, 'rollNumber cannot be blank');
+=======
+  }, 'rollNumber cannot be blank');*/
 
-// // Validate empty password
-// AdminSchema
-//   .path('hashedPassword')
-//   .validate(function(hashedPassword) {
-//   	// if ((this._password == null) || (this._password == ""))  return 0;
-//     if (authTypes.indexOf(this.provider) !== -1) return true;
-//     return hashedPassword.length;
-//   }, 'Password cannot be blank');
+//validate empty name
+ /* UserSchema
+  .path('name')
+  .validate(function(name) {
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return name.length;
+  }, 'name cannot be blank');*/
+
+  //validate empty hostel name
+ /* UserSchema
+  .path('hostel')
+  .validate(function(hostel) {
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return hostel.length;
+  }, 'hostelName cannot be blank');*/
+>>>>>>> 42a55238d848a4942349c3217aa4956e8ae1ec65
+
+// Validate empty password
+UserSchema
+  .path('hashedPassword')
+  .validate(function(hashedPassword) {
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return hashedPassword.length;
+  }, 'Password cannot be blank');
 
 // Validate rollNumber is not taken
-AdminSchema
+UserSchema
   .path('rollNumber')
   .validate(function(value, respond) {
     var self = this;
@@ -101,7 +122,7 @@ var validatePresenceOf = function(value) {
 /**
  * Pre-save hook
  */
-AdminSchema
+UserSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
 
@@ -114,7 +135,7 @@ AdminSchema
 /**
  * Methods
  */
-AdminSchema.methods = {
+UserSchema.methods = {
   /**
    * Authenticate - check if the passwords are the same
    *
@@ -150,4 +171,4 @@ AdminSchema.methods = {
   }
 };
 
-module.exports = mongoose.model('Admin', AdminSchema);
+module.exports = mongoose.model('User', UserSchema);

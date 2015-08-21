@@ -1,10 +1,11 @@
 'use strict';
 var mongoose = require('mongoose');
 var _ = require('lodash');
-// var scoreboardss.Hostel = require('./scoreboard.model');
 var scoreboardss = require('./scoreboard.model');
+
 var Hostels=["Tapti","Pampa","Mahanadhi","Mandakini","Sindhu","Ganga","Brahmaputra","Tamraparani","Godavari","Narmada","Saraswathi","Krishna","Cauvery","Tunga","Badra","Jamuna","Alakanada","Sharavati","Sarayu","Sabarmati"];
 var cat=["lit","tech","sports"];
+
 // Get list of scoreboards
 exports.index = function(req, res) {
   scoreboardss.Scoreboard.find(function (err, scoreboards) {
@@ -13,34 +14,6 @@ exports.index = function(req, res) {
   });
 };
 
-// // Get a single scoreboard
-// exports.show = function(req, res) {
-//   scoreboardss.Scoreboard.findById(req.params.id, function (err, scoreboard) {
-//     if(err) { return handleError(res, err); }
-//     if(!scoreboard) { return res.status(404).send('Not Found'); }
-//     return res.json(scoreboard);
-//   });
-// };
-
-
-// // Creates a new scoreboard in the DB.
-// exports.create = function(req, res) {
-//   req.body.category = req.user.role.category;
-
-//   var query = { category : req.body.category };
-//   scoreboardss.Scoreboard.find(query, function (err , scoreboard) {
-//     if(err) { return handleError(res, err); }
-//     if( scoreboard.length < 1) {
-//       scoreboardss.Scoreboard.create( req.body, function (err, scoreboard) {
-//         if(err) { return handleError(res, err); }
-//         return res.json(201, scoreboard);
-//       });
-//     }
-//     else {
-//       return res.json(200, scoreboard[0]);
-//     }
-//   });
-// };
 
 // Updates an existing scoreboard in the DB.
 exports.update = function(req, res) {
@@ -87,14 +60,9 @@ exports.setup = function(req, res) {
      
   });
   });
-
  }
-// scoreboardss.Hostel.find(function (err,hostel) {
-//     if(err) { return handleError(res, err); }
-//      return res.status(201).json(hostel);
-//   });
  
- 
+
    while(j!=Hostels.length) {require('deasync').sleep(10);}
  
  j=2;

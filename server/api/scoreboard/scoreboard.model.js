@@ -3,8 +3,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-
-
 var ScorecardSchema = new Schema({
 	hostelId : { type:Schema.Types.ObjectId, ref:'HostelSchema' , unique: true},
   	score : { type: Number,required:true,default:0}
@@ -26,3 +24,4 @@ var Scorecard = mongoose.model('Scorecard', ScorecardSchema);
 exports.Scoreboard = Scoreboard;
 exports.Hostel = Hostel;
 exports.Scorecard=Scorecard;
+

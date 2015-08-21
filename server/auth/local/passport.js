@@ -13,7 +13,6 @@ exports.setup = function (User, config) {
         rollNumber: rollNumber.toLowerCase()
       }, function(err, user) {
         if (err) return done(err);
-
         if (!user) {
           return done(null, false, { error : 404, message: 'This rollNumber is not registered.' });
         }
