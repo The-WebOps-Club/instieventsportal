@@ -12,6 +12,8 @@ router.post('/addConvenor', auth.hasAdminRole('core'), controller.addConvenor);
 router.post('/sec/:role', auth.hasAdminRole('sec'), controller.addSecRole);
 router.put('/:id', controller.update);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
+router.post('/forgotPassword', controller.forgotPassword);
+router.post('/resetPassword/:token', controller.resetPassword);
 // router.patch('/:id', controller.update);
 // router.delete('/:id', controller.destroy);
 

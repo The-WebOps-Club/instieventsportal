@@ -15,5 +15,6 @@ router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 //router.put('/:id',controller.update);
 router.get('/:id',auth.isAuthenticated(), controller.show);
 router.post('/',controller.create);
+router.post('/gcmRegister', auth.isAuthenticated(), controller.gcmRegister);
 
 module.exports = router;

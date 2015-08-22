@@ -10,14 +10,14 @@ module.exports = function sendEmail(sub, text, emailTo, messageId, cb) {
  var smtpTransport = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-          user: 'parthu45@gmail.com',
-          pass: 'sudev_jishnu'
+          user: 'cs14b019@smail.iitm.ac.in',
+          pass: '$A1pT7m+'
         }
       });
       // if(!(initial)){
       	var mailOptions = {
         to: emailTo,
-        from: 'parthu45@gmail.com',
+        from: 'cs14b019@smail.iitm.ac.in',
         subject: sub,
         text: text,
         messageId: messageId+'insti-events-portal',
