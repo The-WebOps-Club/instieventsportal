@@ -8,9 +8,24 @@ var cat=["lit","tech","sports"];
 
 // Get list of scoreboards
 exports.index = function(req, res) {
-  scoreboardss.Scoreboard.find(function (err, scoreboards) {
-    if(err) { return handleError(res, err); }
-    return res.status(200).json(scoreboards);
+  // scoreboardss.Scoreboard.find(function (err, scoreboards) {
+  //   if(err) { return handleError(res, err); }
+    // return res.status(200).json(scoreboards);
+    //});
+    scoreboardss.Scoreboard.find({})
+  .lean()
+  .populate({ path: 'scorecard' })
+  .exec(function(err, docs) {
+
+    var options = {
+      path: 'scorecard.hostels',
+      model: 'Hostel'
+    };
+
+    if (err) return res.json(500);
+    scoreboardss.Scoreboard.populate(docs, options, function (err, projects) {
+      res.json(projects);
+    });
   });
 };
 
@@ -26,7 +41,7 @@ exports.update = function(req, res) {
    {  
      for(i=0;i<Hostels.length;i++)
      {
-      if(scoreboard[0].scorecard[i].hostelId==req.body.results[j].hostelId)
+      if(scoreboard[0].scorecard[i].hostels==req.body.results[j].hostels)
       {
         scoreboard[0].scorecard[i].score+=req.body.results[j].score;
       }
@@ -53,7 +68,7 @@ exports.setup = function(req, res) {
    scoreboardss.Hostel.create({name:Hostels[i]}, function (err,hostel) {
     if(err) { return handleError(res, err); }
     // return res.status(201).json(hostel);
-    scoreboardss.Scorecard.create({hostelId:hostel._id}, function (err,scorecard) {
+    scoreboardss.Scorecard.create({hostels:hostel._id}, function (err,scorecard) {
       j++;
     if(err) { return handleError(res, err); }
     // return res.status(201).json(hostel); 

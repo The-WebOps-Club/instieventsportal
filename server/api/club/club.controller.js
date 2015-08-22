@@ -8,6 +8,18 @@ var ClubSchema = require('./club.model');
 exports.index = function(req, res) {
   ClubSchema.Club.find(function (err, clubs) {
     if(err) { return handleError(res, err); }
+    var i,j;
+    for(i=0;i<clubs.length;i++)
+    {
+      j=2;
+      console.log(clubs[i].isSubscribed);
+     ClubSchema.Subscribe.find({club : clubs[i]._id , user : req.user._id},function (err, subscribe){
+      j=5;
+      if(subscribe.length>=1)
+      clubs[i].isSubscribed=true;
+     });
+      while(j!=5) {require('deasync').sleep(10);}
+    }
     return res.json(200, clubs);
   });
 };
