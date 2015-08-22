@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('instieventsportalApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location, $window) {
+  .controller('LoginCtrl', function ($scope, Auth, $location, $window, $state) {
+    console.log("yo");
     $scope.user = {};
     $scope.errors = {};
 
