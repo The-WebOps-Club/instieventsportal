@@ -21,7 +21,8 @@ var ClubSchema = new Schema({
   category: { type : String, required : true },
   updatedOn: { type: Date, default : Date() },
   createdOn: { type: Date, default : Date() },
-  active: { type : Boolean, default : true }
+  active: { type : Boolean, default : true },
+  isSubscribed: { type : Boolean, default : false }
 });
 
 var Club = mongoose.model('Club', ClubSchema);

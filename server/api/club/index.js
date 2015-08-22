@@ -5,7 +5,7 @@ var controller = require('./club.controller');
 var auth = require('../../auth/auth.service');
 var router = express.Router();
 
-router.get('/', auth.hasAdminRole('convenor'), controller.index);
+router.get('/', auth.isAuthenticated(), controller.index);
 // router.get('/:id', controller.show);
 router.post('/', auth.hasAdminRole('sec'), controller.create);
 router.post('/convenor/:id', auth.hasAdminRole('convenor'), controller.updateConvenor);
