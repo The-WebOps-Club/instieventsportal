@@ -173,7 +173,7 @@ exports.forgotPassword = function(req, res, next) {
           'If you did not request this, please ignore this email and your password will remain unchanged.\n';
            mailer('Password Reset Request',message,req.body.rollNumber + '@smail.iitm.ac.in','litsoc-',function (err, info) {
             if(err) { return res.status(500); }
-            else {return res.status(200).json({ message : "Successful"}); }
+            else { return res.status(200).json( { message: "Successful" } ); }
            });
          });
        });

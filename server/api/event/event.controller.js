@@ -102,7 +102,7 @@ exports.addScore = function(req, res) {
       var i,j;
       for( i=0; i < updatedEvent.result.length; i++) {
         for( j=0; j < scoreboard[0].scorecard.length; j++) {
-          if( scoreboard[0].scorecard[j].hostelId == req.body.result[i].hostelId ) {
+          if( scoreboard[0].scorecard[j].hostels == req.body.result[i].hostels ) {
             scoreboard[0].scorecard[j].score += req.body.result[i].score;
           }
         }

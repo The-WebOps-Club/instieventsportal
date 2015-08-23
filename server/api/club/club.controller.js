@@ -46,7 +46,7 @@ exports.create = function(req, res) {
       });
     }
     else {
-      return res.json(200, club[0]);
+      return res.send(200, { message : "Club with same name already exists" ,club : club[0] });
     }
   });
 };
@@ -68,7 +68,7 @@ exports.subscribe = function(req,res) {
       return res.json(200, subscribe[0]);
     }
   });
-};
+}; 
 
 //Unsubscribe from a club
 exports.unsubscribe = function(req,res) {
@@ -92,9 +92,22 @@ exports.unsubscribe = function(req,res) {
 //Show list of subscribed clubs
 exports.showSubscribe = function(req, res) {
   var query = { user : req.params.id };
+  var i,j;
+  var subscribed = [];
   ClubSchema.Subscribe.find(query, function (err, subscribe) {
-    if(err) { return handleError(res, err); }
-    return res.json(200,subscribe);
+    ClubSchema.Club.find(function (err, club) {
+      for(i=0; i<subscribe.length; i++) {
+        for(j=0; j<club.length; j++) {
+          console.log(subscribe[i].club);
+          console.log(club[j]._id);
+          console.log(1);
+          if(subscribe[i].club + '1' == club[j]._id + '1' ) {
+            subscribed.push(club[j]);
+          }
+        }
+      }
+      return res.json(200, subscribed);
+    });
   });
 }
 

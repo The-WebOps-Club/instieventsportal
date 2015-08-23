@@ -6,7 +6,6 @@ var ConvenorSchema = new Schema({
   name: { type : String, required : true },
   email: { type : String, required: true },
   phoneNumber: { type : String, required : true },
-  rollNumber:{type: String,required : true}
 });
 
 var SubscriptionSchema = new Schema({
