@@ -3,23 +3,24 @@
 var _ = require('lodash');
 var ClubSchema = require('./club.model');
 
+
  // Get list of clubs
 exports.index = function(req, res) {
+  var i,j;
   ClubSchema.Club.find(function (err, clubs) {
-    if(err) { return handleError(res, err); }
-    var i,j;
-    for(i=0;i<clubs.length;i++)
-    {
-      j=2;
-      console.log(clubs[i].isSubscribed);
-     ClubSchema.Subscribe.find({club : clubs[i]._id , user : req.user._id},function (err, subscribe){
-      j=5;
-      if(subscribe.length>=1)
-      clubs[i].isSubscribed=true;
-     });
-      while(j!=5) {require('deasync').sleep(10);}
-    }
-    return res.json(200, clubs);
+    ClubSchema.Subscribe.find(function (err, subscribe){
+      for(i=0;i<clubs.length;i++)
+      {
+        for(j=0;j<subscribe.length;j++)
+        {
+          
+          if(subscribe[j].club+'1'==clubs[i]._id+'1' && subscribe[j].user +'1'== req.user._id+'1')
+           { clubs[i].isSubscribed=true; 
+              console.log(clubs[i].isSubscribed);}
+        }
+      }
+      return res.json(200, clubs);
+    });    
   });
 };
 
@@ -69,6 +70,33 @@ exports.subscribe = function(req,res) {
     }
   });
 }; 
+
+exports.subscribeAll = function(req,res) {
+  var subscribed=[];
+  var i,j;
+   for(i=0;i<req.body.clubs.length;i++)
+   {
+    j=0;
+  var query = { user : req.user._id , club : req.body.clubs[i]};
+  ClubSchema.Subscribe.find({ user : req.user._id , club : req.body.clubs[i] }, function (err , subscribe) {
+    if(err) { return handleError(res, err); }
+    if( subscribe.length < 1) {
+      ClubSchema.Subscribe.create({ user : req.user._id , club : req.body.clubs[i] }, function (err, subscribes) {
+        if(err) { return handleError(res, err); }
+         subscribed.push(subscribes);
+         j=5;
+      });
+    }
+    else
+    {
+      j=5;
+      subscribed.push(subscribe[0]);
+    }
+  });
+  while(j!=5) {require('deasync').sleep(10);}
+}
+  return res.json(200, subscribed);
+};
 
 //Unsubscribe from a club
 exports.unsubscribe = function(req,res) {
