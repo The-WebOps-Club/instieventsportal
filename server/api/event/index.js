@@ -12,7 +12,8 @@ router.get('/:pageNumber/:limit',  auth.isAuthenticated() ,controller.limitedVie
 router.post('/refresh',  auth.isAuthenticated() ,controller.refresh);
 router.post('/', auth.hasAdminRole('convenor'), controller.create);
 router.put('/:id', auth.hasAdminRole('convenor'), controller.update);
-router.patch('/:id', auth.hasAdminRole('convenor'), controller.update);
+//router.patch('/:id', auth.hasAdminRole('convenor'), controller.update);
+router.put('/result/:id', auth.hasAdminRole('convenor'), controller.addScore);
 router.delete('/:id', auth.hasAdminRole('convenor'), controller.destroy);
 
 module.exports = router;
