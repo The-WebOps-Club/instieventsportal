@@ -20,7 +20,9 @@ var AdminSchema = new Schema({
   	category : { type: String, required : true },
   	expiryDate : { type: Date, required : true , default : validityDate},
     club : { type: Schema.Types.ObjectId, ref: 'Club' }
-  }
+  },
+  resetPasswordToken : { type : String },
+  resetPasswordExpires : { type :Date },
 });
 
 /**

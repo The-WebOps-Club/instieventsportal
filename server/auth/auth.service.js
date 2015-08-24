@@ -102,7 +102,7 @@ function signToken(id) {
 }
 
 function signAdminToken(id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 30 });
+  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60 });
 }
 
 /**

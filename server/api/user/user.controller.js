@@ -80,7 +80,7 @@ exports.update = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-  var userId = req.user._id;
+  var userId = req.params.id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
@@ -110,6 +110,29 @@ exports.me = function(req, res, next) {
     res.json(user);
   });
 };
+
+exports.gcmRegister = function(req, res) {
+  User.findById(req.user._id, function (err, user) {
+    console.log(req.body.deviceId);
+    if (err) { return handleError(res, err); }
+    if (!user) { res.status(404).json({message: "User does not exist"}); }
+    if(!req.body.deviceId) {res.status(401).json({message: "No deviceId in request"}); }
+    else{
+      if(req.body.oldId) {
+        if( user.deviceId.indexOf(req.body.oldId) > -1)
+          user.deviceId.splice(user.deviceId.indexOf(req.body.oldId), 1);
+      }
+      if( user.deviceId.indexOf(req.body.deviceId) === -1)
+      user.deviceId.push(req.body.deviceId);
+      user.updatedOn = Date.now();
+      user.save(function (err) {
+        if(err) { return handleError(res, err); }
+        res.status(200).json({message: "Successful"}); 
+      });
+    }
+  })
+}
+
 
 /**
  * Authentication callback

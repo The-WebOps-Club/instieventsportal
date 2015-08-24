@@ -2,13 +2,25 @@
 
 var _ = require('lodash');
 var ClubSchema = require('./club.model');
- // Get list of clubs
-//var ClubSchema.Subscribe = require('./club.model');
 
+
+ // Get list of clubs
 exports.index = function(req, res) {
+  var i,j;
   ClubSchema.Club.find(function (err, clubs) {
-    if(err) { return handleError(res, err); }
-    return res.json(200, clubs);
+    ClubSchema.Subscribe.find(function (err, subscribe){
+      for(i=0;i<clubs.length;i++)
+      {
+        for(j=0;j<subscribe.length;j++)
+        {
+          
+          if(subscribe[j].club+'1'==clubs[i]._id+'1' && subscribe[j].user +'1'== req.user._id+'1')
+           { clubs[i].isSubscribed=true; 
+              console.log(clubs[i].isSubscribed);}
+        }
+      }
+      return res.json(200, clubs);
+    });    
   });
 };
 
@@ -34,7 +46,7 @@ exports.create = function(req, res) {
       });
     }
     else {
-      return res.json(200, club[0]);
+      return res.send(200, { message : "Club with same name already exists" ,club : club[0] });
     }
   });
 };
@@ -56,6 +68,33 @@ exports.subscribe = function(req,res) {
       return res.json(200, subscribe[0]);
     }
   });
+}; 
+
+exports.subscribeAll = function(req,res) {
+  var subscribed=[];
+  var i,j;
+   for(i=0;i<req.body.clubs.length;i++)
+   {
+    j=0;
+  var query = { user : req.user._id , club : req.body.clubs[i]};
+  ClubSchema.Subscribe.find({ user : req.user._id , club : req.body.clubs[i] }, function (err , subscribe) {
+    if(err) { return handleError(res, err); }
+    if( subscribe.length < 1) {
+      ClubSchema.Subscribe.create({ user : req.user._id , club : req.body.clubs[i] }, function (err, subscribes) {
+        if(err) { return handleError(res, err); }
+         subscribed.push(subscribes);
+         j=5;
+      });
+    }
+    else
+    {
+      j=5;
+      subscribed.push(subscribe[0]);
+    }
+  });
+  while(j!=5) {require('deasync').sleep(10);}
+}
+  return res.json(200, subscribed);
 };
 
 //Unsubscribe from a club
@@ -80,9 +119,22 @@ exports.unsubscribe = function(req,res) {
 //Show list of subscribed clubs
 exports.showSubscribe = function(req, res) {
   var query = { user : req.params.id };
+  var i,j;
+  var subscribed = [];
   ClubSchema.Subscribe.find(query, function (err, subscribe) {
-    if(err) { return handleError(res, err); }
-    return res.json(200,subscribe);
+    ClubSchema.Club.find(function (err, club) {
+      for(i=0; i<subscribe.length; i++) {
+        for(j=0; j<club.length; j++) {
+          console.log(subscribe[i].club);
+          console.log(club[j]._id);
+          console.log(1);
+          if(subscribe[i].club + '1' == club[j]._id + '1' ) {
+            subscribed.push(club[j]);
+          }
+        }
+      }
+      return res.json(200, subscribed);
+    });
   });
 }
 
@@ -140,4 +192,4 @@ exports.changeStatus = function(req, res) {
 
 function handleError(res, err) {
   return res.send(500, err);
-}
+};

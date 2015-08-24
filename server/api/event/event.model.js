@@ -4,12 +4,17 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 var mongoosePaginate = require('mongoose-paginate');
 
-
 var CoordSchema = new Schema({
 	name : { type : String, required : true },
 	phoneNumber : { type : String, required : true },
 	email : { type : String, required : true }
 });
+
+var ResultSchema = new Schema({
+	hostels : { type : Schema.Types.ObjectId, ref : 'Hostel', required : true, unique : true },
+	score : { type : Number, default : 0}
+});
+
 var EventSchema = new Schema({
 	name : { type : String, required : true },
 	time : { type : Date},
@@ -22,7 +27,8 @@ var EventSchema = new Schema({
     createdOn : { type : Date, default : Date()},
     updatedOn : { type : Date, default : Date()},
 	category : { type : String, required : true },
-	coords : [CoordSchema]
+	coords : [CoordSchema],
+	result : [ResultSchema]
 });
 
 EventSchema.plugin(mongoosePaginate);
