@@ -23,7 +23,6 @@ exports.show = function(req, res) {
 
 // Creates a new club in the DB.
 exports.create = function(req, res) {
-  console.log(req.body);
   req.body.category = req.user.role.category; 
   var query = { name : req.body.name , category : req.body.category };
   ClubSchema.Club.find(query, function (err , club) {
