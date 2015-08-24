@@ -5,11 +5,7 @@ var mongoose = require('mongoose'),
 var ConvenorSchema = new Schema({
   name: { type : String, required : true },
   email: { type : String, required: true },
-<<<<<<< HEAD
   phoneNumber: { type : String, required : true }
-=======
-  phoneNumber: { type : String, required : true },
->>>>>>> b1aa7ef291280bc9e6b01cd556b843f7c39efc78
 });
 
 var SubscriptionSchema = new Schema({
