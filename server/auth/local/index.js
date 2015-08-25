@@ -17,12 +17,13 @@ router.post('/mobile', function(req, res, next) {
   passport.authenticate('user-local', function (err, user, info) {
     var error = err || info;
      if (error) {
+      console.log(error);
       if (error.error == 404){
         user = new User(req.body);
-       user.provider = 'local';
-       user.role = 'user';
-       user.save(function(err, user) {
-        if (err) return validationError(res, err);
+         user.provider = 'local';
+         user.role = 'user';
+         user.save(function(err, user) {
+        if (err) {console.log(err); return validationError(res, err); };
       });
       }
       else

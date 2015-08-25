@@ -112,6 +112,7 @@ exports.me = function(req, res, next) {
 };
 
 exports.gcmRegister = function(req, res) {
+  console.log(req.user);
   User.findById(req.user._id, function (err, user) {
     console.log(req.body.deviceId);
     if (err) { return handleError(res, err); }
@@ -140,3 +141,8 @@ exports.gcmRegister = function(req, res) {
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
+
+function handleError(res, err) {
+  return res.send(500, err);
+};
+
