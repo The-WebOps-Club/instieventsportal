@@ -17,12 +17,13 @@ router.post('/mobile', function(req, res, next) {
   passport.authenticate('user-local', function (err, user, info) {
     var error = err || info;
      if (error) {
+      console.log(error);
       if (error.error == 404){
         user = new User(req.body);
-       user.provider = 'local';
-       user.role = 'user';
-       user.save(function(err, user) {
-        if (err) return validationError(res, err);
+         user.provider = 'local';
+         user.role = 'user';
+         user.save(function(err, user) {
+        if (err) {console.log(err); return validationError(res, err); };
       });
       }
       else
@@ -64,8 +65,18 @@ router.post('/', function(req, res, next) {
       else
       return res.json(401, error);
     }
-     var token = auth.signToken(user._id, user.role);
+    console.log(user.hostel);
+    console.log(user.name);
+    if(user.hostel==undefined||user.name==undefined)
+    {
+      console.log(0);
+      res.json(404,{message:"either hostel or name field is missing"});
+    }
+    else
+    {
+  var token = auth.signToken(user._id, user.role);
   res.json(200,{ token: token, user:user});
+    }
   })(req, res, next)
 });
 
