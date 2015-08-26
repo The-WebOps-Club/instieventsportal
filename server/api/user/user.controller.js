@@ -176,40 +176,6 @@ exports.gcmRegister = function(req, res) {
     }
   })
 }
-<<<<<<< HEAD
-exports.test = function( req, res,next){
-   
- 
-var message = new gcm.Message();
- 
-message.addData('key1', 'hi');
- 
-var regIds = ['f0fnIjb824o:APA91bE8_zJ5YfyrMRywpYLCBPtnO47Bap1UmXDZuXDfBMVyJ_BdnYAdDAAC8cSEYZAIdyDbCn1CpIgIOsVU_j604gY-Z3rJ_UWu7DuzZ83BSmeRc6U2qd_5S5BnyhVCsm32aXzhEgK6'];
- 
-// Set up the sender with you API key 
-var sender = new gcm.Sender('AIzaSyC3G_081rzoIrxRkhN_kC6Fcs3V_fpi2fQ');
- 
-//Now the sender can be used to send messages 
-sender.send(message, regIds, function (err, result) {
-    if(err) console.error(err);
-    else    console.log(result);
-});
- 
-sender.sendNoRetry(message, regIds, function (err, result) {
-    if(err) console.error(err);
-    else    console.log(result);
-});
-};
-=======
-
-exports.test = function(req,res) {
-  var message = "Gcm Check";
-  gcm(message,"f0fnIjb824o:APA91bE8_zJ5YfyrMRywpYLCBPtnO47Bap1UmXDZuXDfBMVyJ_BdnYAdDAAC8cSEYZAIdyDbCn1CpIgIOsVU_j604gY-Z3rJ_UWu7DuzZ83BSmeRc6U2qd_5S5BnyhVCsm32aXzhEgK6",function (err, info) {
-  });
-  return res.status(200).json({message : "Successful"});
-}
-
->>>>>>> 069ba8016442d0caa58d64868643810c9dacaaac
 
 /**
  * Authentication callback
