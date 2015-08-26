@@ -5,6 +5,10 @@ var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
+var gcm = require('node-gcm');
+var Event = require('../../api/event/event.model');
+var scoreboardss= require('../../api/scoreboard/scoreboard.model');
+var Clubs = require('../../api/club/club.model');
 //var mailer=require('../../components/mailer')
 
 var validationError = function(res, err) {
@@ -49,6 +53,44 @@ exports.show = function (req, res, next) {
     if (!user) return res.send(401);
     res.json(user.profile);
   });
+};
+
+exports.refresh = function(req,res) {
+  Clubs.Club.find({updatedOn:{$gt: req.body.time}}, function(err,clubs){
+    if(err) { return handleError(res,err); }
+    
+  scoreboardss.Scoreboard.find({updatedOn:{$gt: req.body.time}})
+  .lean()
+  .populate({ path: 'scorecard' })
+  .exec(function(err, docs) {
+
+    var options = {
+      path: 'scorecard.hostels',
+      model: 'Hostel'
+    };
+
+    if (err) return res.json(500);
+    scoreboardss.Scoreboard.populate(docs, options, function (err, projects) {
+      Event.find({updatedOn:{$gt: req.body.time}})
+  .lean()
+  // .populate({ path: 'club' })
+  .exec(function(err, docs) {
+
+    var options = {
+      path: 'club',
+      model: 'Club'
+    };
+
+    if (err) return res.json(500);
+    scoreboardss.Scoreboard.populate(docs, options, function (err, events) {
+      
+      return res.json(200,{events:events,clubs:clubs,scoreboard:projects})
+    });
+  });
+    });
+  });
+  
+  });  
 };
 
 /**
@@ -133,7 +175,29 @@ exports.gcmRegister = function(req, res) {
     }
   })
 }
-
+exports.test = function( req, res,next){
+   
+ 
+var message = new gcm.Message();
+ 
+message.addData('key1', 'hi');
+ 
+var regIds = ['f0fnIjb824o:APA91bE8_zJ5YfyrMRywpYLCBPtnO47Bap1UmXDZuXDfBMVyJ_BdnYAdDAAC8cSEYZAIdyDbCn1CpIgIOsVU_j604gY-Z3rJ_UWu7DuzZ83BSmeRc6U2qd_5S5BnyhVCsm32aXzhEgK6'];
+ 
+// Set up the sender with you API key 
+var sender = new gcm.Sender('AIzaSyC3G_081rzoIrxRkhN_kC6Fcs3V_fpi2fQ');
+ 
+//Now the sender can be used to send messages 
+sender.send(message, regIds, function (err, result) {
+    if(err) console.error(err);
+    else    console.log(result);
+});
+ 
+sender.sendNoRetry(message, regIds, function (err, result) {
+    if(err) console.error(err);
+    else    console.log(result);
+});
+};
 
 /**
  * Authentication callback

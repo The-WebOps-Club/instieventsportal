@@ -14,6 +14,8 @@ var HostelSchema = new Schema({
 
 var ScoreboardSchema = new Schema({
   category: {type:String , required: true},
+  createdOn : { type : Date, default : Date()},
+  updatedOn : { type : Date, default : Date()},
   scorecard: [ScorecardSchema]
 });
 

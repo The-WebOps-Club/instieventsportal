@@ -14,6 +14,7 @@ var SubscriptionSchema = new Schema({
 });
 
 var ClubSchema = new Schema({
+  logo: {type: String},
   name: { type : String, required : true },
   convenors: [ConvenorSchema],
   description: { type : String },
