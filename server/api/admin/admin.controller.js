@@ -5,9 +5,7 @@ var Admin = require('./admin.model');
 var mailer=require('../../components/mailer');
 var async=require('async');
 var crypto=require('crypto');
-var Event = require('../../api/event/event.model');
-var Scoreboardss= require('../../api/scoreboard/scoreboard.model');
-var Clubs = require('../../api/club/club.model');
+
 
 var createAdmin = function (adminRole,req,res){
   // For error and success message

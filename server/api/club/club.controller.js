@@ -2,6 +2,25 @@
 
 var _ = require('lodash');
 var ClubSchema = require('./club.model');
+var gcm = require('../../components/gcm-data');
+var User = require('../user/user.model');
+
+function getUsers()
+{
+  var regIds = [];
+  var i,j,k=0;
+  var len=-1;
+  User.find(function (err, users) {
+    len=users.length;
+    for(i=0; i<users.length; i++) {
+      for(j=0; j<users[i].deviceId.length; j++) {
+        regIds[k++] = users[i].deviceId[j];
+      }
+    }
+  });
+  while(i!=len) { require('deasync').sleep(10); }
+  return regIds; 
+};
 
 
  // Get list of clubs
@@ -15,8 +34,7 @@ exports.index = function(req, res) {
         {
           
           if(subscribe[j].club+'1'==clubs[i]._id+'1' && subscribe[j].user +'1'== req.user._id+'1')
-           { clubs[i].isSubscribed=true; 
-              console.log(clubs[i].isSubscribed);}
+           { clubs[i].isSubscribed=true; }
         }
       }
       return res.json(200, clubs);
@@ -42,6 +60,7 @@ exports.create = function(req, res) {
     if( club.length < 1) {
       ClubSchema.Club.create( req.body, function (err, club) {
         if(err) { return handleError(res, err); }
+        gcm(103, club, getUsers());
         return res.json(201, club);
       });
     }
@@ -99,8 +118,8 @@ exports.subscribeAll = function(req,res) {
 
 //Unsubscribe from a club
 exports.unsubscribe = function(req,res) {
-  req.body.user = req.user;
   req.body.club = req.params.id;
+  req.body.user = req.user;
   var query = { user : req.body.user , club : req.body.club};
   ClubSchema.Subscribe.find(query, function (err , subscribe) {
     if(err) { return handleError(res, err); }
@@ -118,17 +137,16 @@ exports.unsubscribe = function(req,res) {
 
 //Show list of subscribed clubs
 exports.showSubscribe = function(req, res) {
-  var query = { user : req.params.id };
+  req.body.user = req.user;
+  var query = { user : req.user };
   var i,j;
   var subscribed = [];
   ClubSchema.Subscribe.find(query, function (err, subscribe) {
     ClubSchema.Club.find(function (err, club) {
       for(i=0; i<subscribe.length; i++) {
         for(j=0; j<club.length; j++) {
-          console.log(subscribe[i].club);
-          console.log(club[j]._id);
-          console.log(1);
           if(subscribe[i].club + '1' == club[j]._id + '1' ) {
+            club[j].isSubscribed = true;
             subscribed.push(club[j]);
           }
         }

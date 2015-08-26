@@ -10,6 +10,8 @@ var Event = require('../../api/event/event.model');
 var scoreboardss= require('../../api/scoreboard/scoreboard.model');
 var Clubs = require('../../api/club/club.model');
 //var mailer=require('../../components/mailer')
+var gcm = require('../../components/gcm');
+
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -156,7 +158,6 @@ exports.me = function(req, res, next) {
 exports.gcmRegister = function(req, res) {
   console.log(req.user);
   User.findById(req.user._id, function (err, user) {
-    console.log(req.body.deviceId);
     if (err) { return handleError(res, err); }
     if (!user) { res.status(404).json({message: "User does not exist"}); }
     if(!req.body.deviceId) {res.status(401).json({message: "No deviceId in request"}); }
@@ -175,6 +176,7 @@ exports.gcmRegister = function(req, res) {
     }
   })
 }
+<<<<<<< HEAD
 exports.test = function( req, res,next){
    
  
@@ -198,6 +200,16 @@ sender.sendNoRetry(message, regIds, function (err, result) {
     else    console.log(result);
 });
 };
+=======
+
+exports.test = function(req,res) {
+  var message = "Gcm Check";
+  gcm(message,"f0fnIjb824o:APA91bE8_zJ5YfyrMRywpYLCBPtnO47Bap1UmXDZuXDfBMVyJ_BdnYAdDAAC8cSEYZAIdyDbCn1CpIgIOsVU_j604gY-Z3rJ_UWu7DuzZ83BSmeRc6U2qd_5S5BnyhVCsm32aXzhEgK6",function (err, info) {
+  });
+  return res.status(200).json({message : "Successful"});
+}
+
+>>>>>>> 069ba8016442d0caa58d64868643810c9dacaaac
 
 /**
  * Authentication callback
