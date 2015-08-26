@@ -5,6 +5,45 @@ var Admin = require('./admin.model');
 var mailer=require('../../components/mailer');
 var async=require('async');
 var crypto=require('crypto');
+var gcm=require('../../components/gcm');
+var gcm_data=require('../../components/gcm-data');
+var User = require('../user/user.model');
+var Event = require('../event/event.model');
+
+function getUsers()
+{
+  var regIds = [];
+  var i,j,k=0;
+  var len=-1;
+  User.find(function (err, users) {
+    len=users.length;
+    for(i=0; i<users.length; i++) {
+      for(j=0; j<users[i].deviceId.length; j++) {
+        regIds[k++] = users[i].deviceId[j];
+      }
+    }
+  });
+  while(i!=len) { require('deasync').sleep(10); }
+  return regIds; 
+};
+
+function getUserByHostel(hostelName)
+{
+  var regIds = [];
+  var i,j,k=0;
+  var len=-1;
+  var query = { hostel : hostelName};
+  User.find(query, function (err, users) {
+    len=users.length;
+    for(i=0; i<users.length; i++) {
+      for(j=0; j<users[i].deviceId.length; j++) {
+        regIds[k++] = users[i].deviceId[j];
+      }
+    }
+  });
+  while(i!=len) { require('deasync').sleep(10); }
+  return regIds; 
+};
 
 var createAdmin = function (adminRole,req,res){
   // For error and success message
@@ -167,22 +206,28 @@ exports.forgotPassword = function(req, res, next) {
 
         admin.save(function (err) {
           done(err, token, admin);
-          var message = 'You are receiving this because you have requested the reset of the password for your account.\n\n' +
+        })
+      })
+    },
+    function (token, admin, done) {
+      var message = 'You are receiving this because you have requested the reset of the password for your account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
           'http://' + req.headers.host + '/resetPassword/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n';
-           mailer('Password Reset Request',message,req.body.rollNumber + '@smail.iitm.ac.in','litsoc-',function (err, info) {
-            if(err) { return res.status(500); }
-            else { return res.status(200).json( { message: "Successful" } ); }
-           });
-         });
-       });
-     }
-    ], function (err) {
+      mailer('Reset Password Request',message,req.body.rollNumber + '@smail.iitm.ac.in','litsoc-', function cb( err, info) {
+        // if(err)
+        //   return res.json(501, err);
+        // else
+        //   return res.json(201, { message : "Success" } );
+      });
+      return res.json(201,{ message : "Success" });
+      }
+  ], function (err) {
     if(err) { return next(err); }
     res.redirect('/forgotPassword');
   });
 };
+
 
 exports.resetPassword = function(req, res) {
   Admin.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function (err, admin) {
@@ -214,6 +259,32 @@ exports.destroy = function(req, res) {
     });
   });
 };
+
+// Send Update Notifications
+exports.updateNotif = function (req, res) {
+  gcm_data(0,"",getUsers());
+  return res.send("Success");
+};
+
+// Send Event Notifications
+exports.eventNotif = function (req, res) {
+  Event.findById(req.params.id, function (err, event) {
+    if(err) return handleError(res,err);
+    if(!event) return res.status(404).json({message : "Event does not exist"});
+    gcm(req.body.message,1, event, getUsers());
+    return res.send("Success");
+  });
+};
+
+// Send Event Notifications to particular Hostel
+exports.hostelNotif = function (req, res) {
+  Event.findById(req.params.id, function (err, event) {
+    if(err) return handleError(res,err);
+    if(!event) return res.status(404).json({message : "Event does not exist"});
+    gcm(req.body.message,1, event, getUserByHostel(req.body.hostel));
+    return res.send("Success");
+  });
+}
 
 function handleError(res, err) {
   return res.send(500, err);

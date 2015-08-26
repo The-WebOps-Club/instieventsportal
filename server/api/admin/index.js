@@ -14,6 +14,9 @@ router.put('/:id',auth.hasAdminRole('sec'), controller.update);
 router.put('/:id/password', auth.hasAdminRole('convenor'), controller.changePassword);
 router.post('/forgotPassword', controller.forgotPassword);
 router.post('/resetPassword/:token', controller.resetPassword);
+router.get('/updateNotif', auth.hasAdminRole('sec'), controller.updateNotif);
+router.post('/eventNotif/:id', auth.hasAdminRole('convenor'), controller.eventNotif);
+router.post('/hostelNotif/:id', auth.hasAdminRole('convenor'), controller.hostelNotif);
 // router.patch('/:id', controller.update);
 // router.delete('/:id', controller.destroy);
 

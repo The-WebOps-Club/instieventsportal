@@ -4,6 +4,25 @@ var _ = require('lodash');
 var Event = require('./event.model');
 var mongoosePaginate = require('mongoose-paginate');
 var scoreboardss = require('../scoreboard/scoreboard.model');
+var gcm = require('../../components/gcm-data');
+var User = require('../user/user.model');
+
+function getUsers()
+{
+  var regIds = [];
+  var i,j,k=0;
+  var len=-1;
+  User.find(function (err, users) {
+    len=users.length;
+    for(i=0; i<users.length; i++) {
+      for(j=0; j<users[i].deviceId.length; j++) {
+        regIds[k++] = users[i].deviceId[j];
+      }
+    }
+  });
+  while(i!=len) { require('deasync').sleep(10); }
+  return regIds; 
+};
 
 // Get list of events
 exports.index = function(req, res) {
@@ -39,7 +58,8 @@ exports.create = function(req, res) {
   if (req.user.role.name == 'sec'){ req.body.isLitSocEvent = true; } 
   else { req.body.club = req.user.role.club }
   Event.create(req.body, function(err, event) {
-    if(err) { return handleError(res, err); }
+    if(err) { return handleError(res, err); } 
+    gcm(101, event, getUsers());
     return res.json(201, event);
   });
 };
@@ -50,7 +70,6 @@ exports.limitedView = function (req, res) {
   limit: req.params.limit,
   sortBy: Event.time
 },function(err, results, pageCount, itemCount){
-  console.log(results);
   return res.json(200,results);
 } );
 }
@@ -67,6 +86,7 @@ exports.update = function(req, res) {
     updated.updatedOn = Date();
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
+      gcm(201, event, getUsers());
       return res.json(200, event);
     });
   });
@@ -86,15 +106,11 @@ exports.destroy = function(req, res) {
 
 exports.addScore = function(req, res) {
   Event.findById(req.params.id, function (err, event) {
+    var response;
     if(err) { return handleError(res, err); }
     if(!event) { return res.send(404); }
+    var stop=0;
     var updatedEvent = new Event(event);
-    updatedEvent.result = req.body.result;
-    var response;
-    Event.update( { _id : req.params.id }, { result : req.body.result }, function(err, numberAffected, rawResponse) {
-      if (err) { return handleError(res, err); }
-      response = res.json(200,updatedEvent);
-    });
     var query = { category : req.user.role.category };
     scoreboardss.Scoreboard.find(query, function (err, scoreboard) {
       if(err) { return handleError(res, err); }
@@ -102,7 +118,19 @@ exports.addScore = function(req, res) {
       var i,j;
       for( i=0; i < updatedEvent.result.length; i++) {
         for( j=0; j < scoreboard[0].scorecard.length; j++) {
-          if( scoreboard[0].scorecard[j].hostels == req.body.result[i].hostels ) {
+          if( scoreboard[0].scorecard[j].hostel == req.body.result[i].hostel ) {
+            scoreboard[0].scorecard[j].score -= updatedEvent.result[i].score;
+          }
+        }
+      }
+      updatedEvent.result = req.body.result;
+      Event.update( { _id : req.params.id }, { result : req.body.result }, function(err, numberAffected, rawResponse) {
+        if (err) { return handleError(res, err); }
+        response = res.json(200,updatedEvent);
+      });
+      for( i=0; i < updatedEvent.result.length; i++) {
+        for( j=0; j < scoreboard[0].scorecard.length; j++) {
+          if( scoreboard[0].scorecard[j].hostel == req.body.result[i].hostel ) {
             scoreboard[0].scorecard[j].score += req.body.result[i].score;
           }
         }
@@ -110,8 +138,10 @@ exports.addScore = function(req, res) {
       var board = scoreboard[0];
       board.save(function (err) {
         if (err) { return handleError(res, err); }
+        stop=1;
       });
     });
+    gcm(301,updatedEvent,getUsers());
     return response;
   });
 }
