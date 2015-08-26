@@ -40,6 +40,9 @@ exports.setup = function (User, config) {
         if (!user.authenticate(password)) {
           return done(null, false, { message: 'This password is not correct.' });
         }
+        if (user.role.expiryDate < Date.now() ) {
+          return done(null, false, { message: 'Your admin role has expired.'});
+        }
         return done(null, user);
       });
     }

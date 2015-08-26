@@ -54,13 +54,18 @@ exports.show = function(req, res) {
 
 // Creates a new event in the DB.
 exports.create = function(req, res) {
-  req.body.category = req.user.role.category;
-  if (req.user.role.name == 'sec'){ req.body.isLitSocEvent = true; } 
-  else { req.body.club = req.user.role.club }
-  Event.create(req.body, function(err, event) {
-    if(err) { return handleError(res, err); } 
-    gcm(101, event, getUsers());
-    return res.json(201, event);
+  Event.findOne({ name : req.body.name },function (err ,event) {
+    if(!event) {
+    req.body.category = req.user.role.category;
+    if (req.user.role.name == 'sec' || req.user.role.name == 'core' ){ req.body.isLitSocEvent = true; } 
+    else { req.body.club = req.user.role.club }
+    Event.create(req.body, function(err, event) {
+      if(err) { return handleError(res, err); } 
+      gcm(101, event, getUsers());
+      return res.json(201, event);
+    });}
+    else
+      return res.send(200, { message : "Event with same name already exists" ,event : event });
   });
 };
 
@@ -81,14 +86,17 @@ exports.update = function(req, res) {
   Event.findById(req.params.id, function (err, event) {
     if (err) { return handleError(res, err); }
     if(!event) { return res.send(404); }
-    var updated = _.merge(event, req.body);
-    if (req.body.coords != null) updated.coords = req.body.coords;
-    updated.updatedOn = Date();
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      gcm(201, event, getUsers());
-      return res.json(200, event);
-    });
+    if(req.user.role.category==event.category && (!(req.user.role.club) || req.user.role.club == event.club) )
+    {
+      var updated = _.merge(event, req.body);
+      if (req.body.coords != null) updated.coords = req.body.coords;
+      updated.updatedOn = Date();
+      updated.save(function (err) {
+        if (err) { return handleError(res, err); }
+        gcm(201, event, getUsers());
+        return res.json(200, event);
+      });
+    }
   });
 };
 
@@ -135,6 +143,7 @@ exports.addScore = function(req, res) {
           }
         }
       }
+      scoreboard[0].updatedOn = Date();
       var board = scoreboard[0];
       board.save(function (err) {
         if (err) { return handleError(res, err); }
