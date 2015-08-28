@@ -12,7 +12,7 @@ router.get('/', auth.isAuthenticated(), controller.index);
 router.post('/', auth.hasAdminRole('sec'), controller.create);
 router.post('/convenor/:id', auth.hasAdminRole('convenor'), controller.updateConvenor);
 router.put('/:id', auth.hasAdminRole('convenor'), controller.update);
-router.get('/subscribe/:id', controller.showSubscribe);
+router.get('/subscribe', auth.isAuthenticated(), controller.showSubscribe);
 router.post('/subscribe/:id', auth.isAuthenticated(), controller.subscribe);
 router.get('/unsubscribe/:id', auth.isAuthenticated(), controller.unsubscribe);
 // router.patch('/:id', controller.update);

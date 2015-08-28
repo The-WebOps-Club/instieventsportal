@@ -1,8 +1,8 @@
 var gcm = require('node-gcm');
 
-module.exports = function sendNotif(messageText, Type, Data, regIds) {
+module.exports = function sendNotif(Type, Data, regIds) {
   var message = new gcm.Message();
-  message.addData('message',messageText);
+  message.addData('message',"");
   message.addData('type',Type);
   message.addData('data',Data);
   if(!(regIds instanceof Array))

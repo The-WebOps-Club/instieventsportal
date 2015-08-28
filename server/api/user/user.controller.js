@@ -5,7 +5,13 @@ var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
+var gcm = require('node-gcm');
+var Event = require('../../api/event/event.model');
+var scoreboardss= require('../../api/scoreboard/scoreboard.model');
+var Clubs = require('../../api/club/club.model');
 //var mailer=require('../../components/mailer')
+var gcm = require('../../components/gcm');
+
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -49,6 +55,44 @@ exports.show = function (req, res, next) {
     if (!user) return res.send(401);
     res.json(user.profile);
   });
+};
+
+exports.refresh = function(req,res) {
+  Clubs.Club.find({updatedOn:{$gt: req.body.time}}, function(err,clubs){
+    if(err) { return handleError(res,err); }
+    
+  scoreboardss.Scoreboard.find({updatedOn:{$gt: req.body.time}})
+  .lean()
+  .populate({ path: 'scorecard' })
+  .exec(function(err, docs) {
+
+    var options = {
+      path: 'scorecard.hostels',
+      model: 'Hostel'
+    };
+
+    if (err) return res.json(500);
+    scoreboardss.Scoreboard.populate(docs, options, function (err, projects) {
+      Event.find({updatedOn:{$gt: req.body.time}})
+  .lean()
+  // .populate({ path: 'club' })
+  .exec(function(err, docs) {
+
+    var options = {
+      path: 'club',
+      model: 'Club'
+    };
+
+    if (err) return res.json(500);
+    scoreboardss.Scoreboard.populate(docs, options, function (err, events) {
+      
+      return res.json(200,{events:events,clubs:clubs,scoreboard:projects})
+    });
+  });
+    });
+  });
+  
+  });  
 };
 
 /**
@@ -114,7 +158,6 @@ exports.me = function(req, res, next) {
 exports.gcmRegister = function(req, res) {
   console.log(req.user);
   User.findById(req.user._id, function (err, user) {
-    console.log(req.body.deviceId);
     if (err) { return handleError(res, err); }
     if (!user) { res.status(404).json({message: "User does not exist"}); }
     if(!req.body.deviceId) {res.status(401).json({message: "No deviceId in request"}); }
@@ -133,7 +176,6 @@ exports.gcmRegister = function(req, res) {
     }
   })
 }
-
 
 /**
  * Authentication callback

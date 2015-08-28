@@ -5,6 +5,46 @@ var Admin = require('./admin.model');
 var mailer=require('../../components/mailer');
 var async=require('async');
 var crypto=require('crypto');
+var gcm = require('../../components/gcm');
+var gcm_data = require('../../components/gcm-data')
+var User = require('../user/user.model');
+var Event = require('../event/event.model');
+
+function getUsers()
+{
+  var regIds = [];
+  var i,j,k=0;
+  var len=-1;
+  User.find(function (err, users) {
+    len=users.length;
+    for(i=0; i<users.length; i++) {
+      for(j=0; j<users[i].deviceId.length; j++) {
+        regIds[k++] = users[i].deviceId[j];
+      }
+    }
+  });
+  while(i!=len) { require('deasync').sleep(10); }
+  return regIds; 
+};
+
+function getUserByHostel(hostelName)
+{
+  var regIds = [];
+  var i,j,k=0;
+  var len=-1;
+  var query = { hostel : hostelName };
+  User.find(query,function (err, users) {
+    len=users.length;
+    for(i=0; i<users.length; i++) {
+      for(j=0; j<users[i].deviceId.length; j++) {
+        regIds[k++] = users[i].deviceId[j];
+      }
+    }
+  });
+  while(i!=len) { require('deasync').sleep(10); }
+  return regIds; 
+};
+
 
 var createAdmin = function (adminRole,req,res){
   // For error and success message
@@ -51,6 +91,7 @@ var createAdmin = function (adminRole,req,res){
     return response;
   });
 };
+
 
 
 // Get list of admins
@@ -214,6 +255,27 @@ exports.destroy = function(req, res) {
     });
   });
 };
+
+exports.updateNotif = function (req, res) {
+  gcm_data(0,"",getUsers());
+  return res.send("Success");
+};
+
+exports.eventNotif = function (req, res) {
+  Event.findById(req.params.id, function (err, event) {
+    gcm(req.body.message,1,event,getUsers());
+    return res.send("Success");
+  });
+};
+
+exports.hostelNotif = function (req, res) {
+  Event.findById(req.params.id, function (err, event) {
+    gcm(req.body.message,2,event,getUserByHostel(req.body.hostel));
+    return res.send("Success");
+  });
+};
+
+
 
 function handleError(res, err) {
   return res.send(500, err);

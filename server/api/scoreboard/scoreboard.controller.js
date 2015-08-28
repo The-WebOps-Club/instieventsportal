@@ -5,6 +5,26 @@ var scoreboardss = require('./scoreboard.model');
 
 var Hostels=["Tapti","Pampa","Mahanadhi","Mandakini","Sindhu","Ganga","Brahmaputra","Tamraparani","Godavari","Narmada","Saraswathi","Krishna","Cauvery","Tunga","Badra","Jamuna","Alakanada","Sharavati","Sarayu","Sabarmati"];
 var cat=["lit","tech","sports"];
+var gcm = require('../../components/gcm-data');
+var User = require('../user/user.model');
+
+function getUsers()
+{
+  var regIds = [];
+  var i,j,k=0;
+  var len=-1;
+  User.find(function (err, users) {
+    len=users.length;
+    for(i=0; i<users.length; i++) {
+      for(j=0; j<users[i].deviceId.length; j++) {
+        regIds[k++] = users[i].deviceId[j];
+      }
+    }
+  });
+  while(i!=len) { require('deasync').sleep(10); }
+  return regIds; 
+};
+
 
 // Get list of scoreboards
 exports.index = function(req, res) {
@@ -50,6 +70,7 @@ exports.update = function(req, res) {
      var updated = scoreboard[0];
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
+      gcm(302, scoreboard, getUsers());
       return res.status(200).json(scoreboard);
     });
 
