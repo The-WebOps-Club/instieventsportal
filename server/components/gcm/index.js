@@ -1,7 +1,8 @@
 var gcm = require('node-gcm');
 
-module.exports = function sendNotif(messageText, Type, Data, regIds) {
+module.exports = function sendNotif(Title,messageText, Type, Data, regIds) {
   var message = new gcm.Message();
+  message.addData('title',Title);
   message.addData('message',messageText);
   message.addData('type',Type);
   message.addData('data',Data);

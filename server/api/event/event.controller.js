@@ -61,7 +61,7 @@ exports.create = function(req, res) {
     else { req.body.club = req.user.role.club }
     Event.create(req.body, function(err, event) {
       if(err) { return handleError(res, err); } 
-      gcm(101, event, getUsers());
+      gcm("",101, event, getUsers());
       return res.json(201, event);
     });}
     else
@@ -93,7 +93,7 @@ exports.update = function(req, res) {
       updated.updatedOn = Date();
       updated.save(function (err) {
         if (err) { return handleError(res, err); }
-        gcm(201, event, getUsers());
+        gcm("",201, event, getUsers());
         return res.json(200, event);
       });
     }
@@ -150,7 +150,7 @@ exports.addScore = function(req, res) {
         stop=1;
       });
     });
-    gcm(301,updatedEvent,getUsers());
+    gcm("",301,updatedEvent,getUsers());
     return response;
   });
 }

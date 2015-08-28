@@ -60,7 +60,7 @@ exports.create = function(req, res) {
     if( club.length < 1) {
       ClubSchema.Club.create( req.body, function (err, club) {
         if(err) { return handleError(res, err); }
-        gcm(103, club, getUsers());
+        gcm("",103, club, getUsers());
         return res.json(201, club);
       });
     }
