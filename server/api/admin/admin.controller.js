@@ -157,7 +157,7 @@ exports.addSecRole = function(req,res){
 // Updates an existing admin in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
-  Admin.findById(req.params.id, function (err, admin) {
+  Admin.findById(req.user._id, function (err, admin) {
     if (err) { return handleError(res, err); }
     if(!admin) { return res.send(404); }
     var updated = _.merge(admin, req.body);
@@ -170,7 +170,7 @@ exports.update = function(req, res) {
 
 //Change Password
 exports.changePassword = function(req, res, next) {
-  var adminId = req.params.id;
+  var adminId = req.user._id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 

@@ -48,7 +48,7 @@ exports.create = function (req, res, next) {
  * Get a single user
  */
 exports.show = function (req, res, next) {
-  var userId = req.params.id;
+  var userId = req.user._id;
 
   User.findById(userId, function (err, user) {
     if (err) return next(err);
@@ -124,7 +124,7 @@ exports.update = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-  var userId = req.params.id;
+  var userId = req.user._id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
