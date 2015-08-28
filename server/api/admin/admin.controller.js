@@ -257,20 +257,20 @@ exports.destroy = function(req, res) {
 };
 
 exports.updateNotif = function (req, res) {
-  gcm_data(0,"",getUsers());
+  gcm_data("New Update Available",0,"",getUsers());
   return res.send("Success");
 };
 
 exports.eventNotif = function (req, res) {
   Event.findById(req.params.id, function (err, event) {
-    gcm(req.body.message,1,event,getUsers());
+    gcm(req.body.title,req.body.message,1,event,getUsers());
     return res.send("Success");
   });
 };
 
 exports.hostelNotif = function (req, res) {
   Event.findById(req.params.id, function (err, event) {
-    gcm(req.body.message,2,event,getUserByHostel(req.body.hostel));
+    gcm(req.body.title,req.body.message,2,event,getUserByHostel(req.body.hostel));
     return res.send("Success");
   });
 };

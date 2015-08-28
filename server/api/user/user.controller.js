@@ -156,7 +156,6 @@ exports.me = function(req, res, next) {
 };
 
 exports.gcmRegister = function(req, res) {
-  console.log(req.user);
   User.findById(req.user._id, function (err, user) {
     if (err) { return handleError(res, err); }
     if (!user) { res.status(404).json({message: "User does not exist"}); }

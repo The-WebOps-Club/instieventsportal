@@ -70,7 +70,7 @@ exports.update = function(req, res) {
      var updated = scoreboard[0];
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      gcm(302, scoreboard, getUsers());
+      gcm("",302, scoreboard, getUsers());
       return res.status(200).json(scoreboard);
     });
 
