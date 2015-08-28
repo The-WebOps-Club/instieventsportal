@@ -70,11 +70,25 @@ exports.update = function(req, res) {
      var updated = scoreboard[0];
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      gcm(202, scoreboard, getUsers());
+      scoreboardss.Scoreboard.find({category : req.user.role.category})
+  .lean()
+  .populate({ path: 'scorecard' })
+  .exec(function(err, docs) {
+
+    var options = {
+      path: 'scorecard.hostel',
+      model: 'Hostel'
+    };
+
+    if (err) return res.json(500);
+    scoreboardss.Scoreboard.populate(docs, options, function (err, scoreboard) {
+      gcm(302, scoreboard, getUsers());
       return res.status(200).json(scoreboard);
     });
-
   });
+    });
+  });
+
 };
 
 exports.setup = function(req, res) {
