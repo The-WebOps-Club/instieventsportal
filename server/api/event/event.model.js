@@ -11,7 +11,7 @@ var CoordSchema = new Schema({
 });
 
 var ResultSchema = new Schema({
-	hostels : { type : Schema.Types.ObjectId, ref : 'Hostel', required : true, unique : true },
+	hostel : { type : Schema.Types.ObjectId, ref : 'Hostel', required : true, unique : true },
 	score : { type : Number, default : 0}
 });
 

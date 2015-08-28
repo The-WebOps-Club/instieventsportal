@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ScorecardSchema = new Schema({
-	hostels : { type:Schema.Types.ObjectId, ref:'HostelSchema' , unique: true},
+	hostel : { type:Schema.Types.ObjectId, ref:'HostelSchema' , unique: true},
   	score : { type: Number,required:true,default:0}
   });
 

@@ -18,7 +18,7 @@ exports.index = function(req, res) {
   .exec(function(err, docs) {
 
     var options = {
-      path: 'scorecard.hostels',
+      path: 'scorecard.hostel',
       model: 'Hostel'
     };
 
@@ -41,7 +41,7 @@ exports.update = function(req, res) {
    {  
      for(i=0;i<Hostels.length;i++)
      {
-      if(scoreboard[0].scorecard[i].hostels==req.body.results[j].hostels)
+      if(scoreboard[0].scorecard[i].hostel==req.body.results[j].hostel)
       {
         scoreboard[0].scorecard[i].score+=req.body.results[j].score;
       }
@@ -68,7 +68,7 @@ exports.setup = function(req, res) {
    scoreboardss.Hostel.create({name:Hostels[i]}, function (err,hostel) {
     if(err) { return handleError(res, err); }
     // return res.status(201).json(hostel);
-    scoreboardss.Scorecard.create({hostels:hostel._id}, function (err,scorecard) {
+    scoreboardss.Scorecard.create({hostel:hostel._id}, function (err,scorecard) {
       j++;
     if(err) { return handleError(res, err); }
     // return res.status(201).json(hostel); 
