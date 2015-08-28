@@ -82,7 +82,7 @@ exports.update = function(req, res) {
 
     if (err) return res.json(500);
     scoreboardss.Scoreboard.populate(docs, options, function (err, scoreboard) {
-      gcm(302, scoreboard, getUsers());
+      gcm("",302, scoreboard, getUsers());
       return res.status(200).json(scoreboard);
     });
   });
