@@ -11,6 +11,7 @@ router.get('/', auth.isAuthenticated(), controller.index);
 // router.post('/',auth.hasAdminRole('sec'), controller.create);
 router.get('/initialsetup',auth.hasAdminRole('sec'),controller.setup);
 router.put('/',auth.hasAdminRole('sec'), controller.update);
-
+router.post('/newHostel',auth.hasAdminRole('sec'), controller.addNewHostel);
+router.get('/getHostel', auth.isAuthenticated(), controller.displayAllHostel);
 
 module.exports = router;
