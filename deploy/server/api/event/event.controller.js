@@ -61,7 +61,7 @@ exports.create = function(req, res) {
     else { req.body.club = req.user.role.club }
     Event.create(req.body, function(err, event) {
       if(err) { return handleError(res, err); } 
-      gcm(101, event, getUsers());
+      gcm("",101, event, getUsers());
       return res.json(201, event);
     });}
     else
@@ -93,7 +93,7 @@ exports.update = function(req, res) {
       updated.updatedOn = Date();
       updated.save(function (err) {
         if (err) { return handleError(res, err); }
-        gcm(201, event, getUsers());
+        gcm("",201, event, getUsers());
         return res.json(200, event);
       });
     }
@@ -147,11 +147,27 @@ exports.addScore = function(req, res) {
       var board = scoreboard[0];
       board.save(function (err) {
         if (err) { return handleError(res, err); }
-        stop=1;
+        // stop=1;
+  Event.find({ _id : req.params.id})
+  .lean()
+  .populate({ path: 'result' })
+  .exec(function(err, docs) {
+
+    var options = {
+      path: 'result.hostel',
+      model: 'Hostel'
+    };
+    console.log(0);
+    if (err) return res.json(500);
+    Event.populate(docs, options, function (err, scoreboard) {
+      gcm("",301, scoreboard, getUsers());
+      return res.status(200).json(scoreboard);
+    });
+  });
       });
     });
-    gcm(301,updatedEvent,getUsers());
-    return response;
+    // gcm("",301,updatedEvent,getUsers());
+    // return response;
   });
 }
  

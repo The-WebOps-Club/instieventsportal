@@ -48,7 +48,7 @@ exports.create = function (req, res, next) {
  * Get a single user
  */
 exports.show = function (req, res, next) {
-  var userId = req.params.id;
+  var userId = req.user._id;
 
   User.findById(userId, function (err, user) {
     if (err) return next(err);
@@ -124,7 +124,7 @@ exports.update = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-  var userId = req.params.id;
+  var userId = req.user._id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
@@ -156,7 +156,6 @@ exports.me = function(req, res, next) {
 };
 
 exports.gcmRegister = function(req, res) {
-  console.log(req.user);
   User.findById(req.user._id, function (err, user) {
     if (err) { return handleError(res, err); }
     if (!user) { res.status(404).json({message: "User does not exist"}); }
@@ -187,4 +186,3 @@ exports.authCallback = function(req, res, next) {
 function handleError(res, err) {
   return res.send(500, err);
 };
-
