@@ -54,6 +54,7 @@ exports.show = function(req, res) {
 
 // Creates a new event in the DB.
 exports.create = function(req, res) {
+  var j=0;
   Event.findOne({ name : req.body.name },function (err ,event) {
     if(!event) {
     req.body.category = req.user.role.category;
@@ -61,11 +62,25 @@ exports.create = function(req, res) {
     else { req.body.club = req.user.role.club }
     Event.create(req.body, function(err, event) {
       if(err) { return handleError(res, err); } 
-      gcm("",101, event, getUsers());
-      return res.json(201, event);
-    });}
+       j=5;
+      });}
     else
       return res.send(200, { message : "Event with same name already exists" ,event : event });
+    while(j!=5){require('deasync').sleep(10);}
+    Event.findOne({name : req.body.name})
+    .lean()
+    .exec(function(err,docs){
+      var options = {
+         path:'club',
+         model:'Club'
+      };
+      if(err) return res.json(500);
+      Event.populate(docs,options,function (err, projects){
+        gcm("",101,projects,getUsers());
+        console.log(0);
+        return res.json(201,projects);
+      });
+    });
   });
 };
 
@@ -113,12 +128,18 @@ exports.destroy = function(req, res) {
 };
 
 exports.addScore = function(req, res) {
-  Event.findById(req.params.id, function (err, event) {
+  Event.findById(req.params.id) 
+   .lean()
+   .exec(function (err, event) {
+    var options={
+      path:'club',
+      model:'Club'
+    }
     var response;
     if(err) { return handleError(res, err); }
     if(!event) { return res.send(404); }
     var stop=0;
-    var updatedEvent = new Event(event);
+    Event.populate(event,options,function (err,updatedEvent){
     var query = { category : req.user.role.category };
     scoreboardss.Scoreboard.find(query, function (err, scoreboard) {
       if(err) { return handleError(res, err); }
@@ -143,7 +164,7 @@ exports.addScore = function(req, res) {
           }
         }
       }
-      scoreboard[0].updatedOn = Date();
+      scoreboard[0].updatedOn = Date.now();
       var board = scoreboard[0];
       board.save(function (err) {
         if (err) { return handleError(res, err); }
@@ -168,6 +189,7 @@ exports.addScore = function(req, res) {
     });
     // gcm("",301,updatedEvent,getUsers());
     // return response;
+  });
   });
 }
  
