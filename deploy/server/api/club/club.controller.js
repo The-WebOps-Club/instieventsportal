@@ -124,12 +124,12 @@ exports.unsubscribe = function(req,res) {
   ClubSchema.Subscribe.find(query, function (err , subscribe) {
     if(err) { return handleError(res, err); }
     if( subscribe.length < 1) {
-      return res.send(404);
+      return res.json(404,{message:"Already Unsubscribed"});
     }
     else {
       subscribe[0].remove( function(err) {
         if (err) { return handleError(res, err); }
-        return res.send(204);
+        return res.json(200,{message:"Succesfully Unsubscribed"});
       }); 
     }
   });

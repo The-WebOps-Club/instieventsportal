@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var _ = require('lodash');
 var scoreboardss = require('./scoreboard.model');
 
-var Hostels=["Tapti","Pampa","Mahanadhi","Mandakini","Sindhu","Ganga","Brahmaputra","Tamraparani","Godavari","Narmada","Saraswathi","Krishna","Cauvery","Tunga","Badra","Jamuna","Alakanada","Sharavati","Sarayu","Sabarmati"];
+var Hostels=["Alakanada","Brahmaputra","Cauvery","Ganga","Godavari","Jamuna","Krishna","Mahanadhi","Mandakini","Narmada","Pampa","Sabarmati","Saraswathi","Sarayu","Sharavati","Sindhu","Tamraparani","Tapti"];
 var cat=["lit","tech","sports"];
 var gcm = require('../../components/gcm-data');
 var User = require('../user/user.model');
@@ -49,6 +49,12 @@ exports.index = function(req, res) {
   });
 };
 
+exports.displayAllHostel = function( req, res){
+  scoreboardss.Hostel.find({},function(err,hostel){
+   if (err) { return handleError(res, err); }
+   res.json(hostel); 
+  });
+}
 
 // Updates an existing scoreboard in the DB.
 exports.update = function(req, res) {
@@ -136,6 +142,31 @@ scoreboardss.Scorecard.find(function (err,scorecards){
 });
 };
 
+exports.addNewHostel = function( req, res)
+{
+  var i;
+  scoreboardss.Hostel.create({name : req.body.name},function ( err , hostel){
+    if(err) { return handleError(res, err); }
+      scoreboardss.Scorecard.create({hostel:hostel._id,score:0},function (err , scorecard){
+         if(err) { return handleError(res, err); }
+         scoreboardss.Scoreboard.find({},function (err , scoreboard){
+          var j=0;
+           for(i=0;i<scoreboard.length;i++)
+           {
+            scoreboard[i].scorecard.push(scorecard); 
+            scoreboard[i].updatedOn=Date.now();     
+           }
+           
+           for(i=0;i<scoreboard.length;i++)
+           {
+           scoreboard[i].save(/*function (err) {
+      if (err) { return handleError(res, err); }}*/);   
+         }
+         }); 
+      });
+   return res.status(200).json({'message':'added hostel successfully'});
+  });
+}
 
 function handleError(res, err) {
   return res.status(500).send(err);
