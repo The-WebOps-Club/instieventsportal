@@ -2,6 +2,7 @@
 
 angular.module('instieventsportalApp', [
   'ngCookies',
+  'ngMaterial',
   'ngResource',
   'ngSanitize',
   'ngRoute',
