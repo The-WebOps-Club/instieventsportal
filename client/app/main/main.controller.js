@@ -3,6 +3,7 @@
 angular.module('instieventsportalApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.awesomeThings = [];
+    window.location = "http://m.litsoc.saarang.org";
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
