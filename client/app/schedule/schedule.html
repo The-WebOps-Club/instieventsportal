@@ -1,19 +1,26 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-
+  <div class="col-md-8 col-md-offset-2">
   <md-toolbar class="md-theme-light">
-    <h2 class="md-toolbar-tools">
-      <span>SCHEDULE</span>
+    <span flex></span>
+    <h2>
+    <span>SCHEDULE</span>
     </h2>
   </md-toolbar>
+  <br>
   <md-content>
     <md-list>
       <md-list-item class="md-3-line" ng-repeat="item in events">
+        <md-subheader>
+          <h3>{{item.name}}</h3>
+            <h3>{{item.time | date}}</h3>
+          <h3>{{item.venue}}</h3>
+        </md-subheader>
         <div class="md-list-item-text">
-          <h3>{{item.date}}</h3>
-          <h4>{{item.description}}</h4>
-          <p>{{item.title}}</p>
+          <br>
+          <p>{{item.description}}</p>
         </div>
         <md-divider md-inset ng-if="!$last"></md-divider>
       </md-list-item>
     </md-list>
   </md-content>
+</div>

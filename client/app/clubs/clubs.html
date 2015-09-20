@@ -1,0 +1,20 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+  <md-toolbar class="md-theme-light">
+    <span flex></span>
+    <h2>
+    <span>CLUBS</span>
+    </h2>
+  </md-toolbar>
+  <md-content class="md-padding">
+    <md-card ng-repeat="club in clubs">
+      <img ng-src="{{club.image}}" class="md-card-image" alt="Washed Out">
+      <md-card-content>
+        <md-subheader>{{club.name}}</md-subheader>
+        <md-content>{{club.description}}</md-content>
+      </md-card-content>
+      <div class="md-actions" layout="row" layout-align="end center">
+        <md-button>{{club.subscribed}}</md-button>
+      </div>
+    </md-card>
+  </md-content>
+  

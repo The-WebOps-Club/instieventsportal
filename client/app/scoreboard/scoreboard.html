@@ -1,6 +1,36 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
+  <div class="col-md-8 col-md-offset-2">
+    <md-toolbar class="md-theme-light">
+    <span flex></span>
+    <h2>
+    <span>SCOREBOARD</span>
+    </h2>
+  </md-toolbar>
+    <md-content layout="column" flex="flex">
+      <md-table headers="headers" content="content" sortable="sortable" filters="search" custom-class="custom" thumbs="thumbs" count="count"></md-table>
+    </md-content>
+<!-- md-table jade template-->
+<div id="md-table-template">
+  <table md-colresize="md-colresize" class="md-table">
+    <thead>
+      <tr class="md-table-headers-row">
+        <th ng-repeat="h in headers" class="md-table-header"><span>{{h.name}}</span></th>
+        <th class="md-table-header"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="c in content" class="md-table-content-row">
+        <!-- <td ng-repeat="h in headers" ng-class="customClass[h.field]" ng-if="h.field != thumbs" class="md-table-content">{{(h.field.indexOf('date') > 0) ? $filter('date')(c[h.field]) : c[h.field];}}</td> -->
 
-<md-content class="md-padding">
+        <td ng-repeat="field in c" class="md-table-content">
+          <span>{{field }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+  <!-- <md-content class="md-padding">
     <md-tabs class="md-accent" md-selected="data.selectedIndex" md-align-tabs="{{data.bottom ? 'bottom' : 'top'}}">
       <md-tab id="tab1">
         <md-tab-label>Lit Soc</md-tab-label>
@@ -25,8 +55,8 @@
         </md-tab-body>
       </md-tab>
     </md-tabs>
-  </md-content>
-  S
+  </md-content> -->
+  
   <!-- <div class="md-padding" layout="row" layout-sm="column" layout-align="left center"
        style="padding-top: 0;">
     <md-checkbox ng-model="data.secondLocked" aria-label="Disable item two?" style="margin: 5px;">
