@@ -263,16 +263,21 @@ exports.updateNotif = function (req, res) {
 
 exports.eventNotif = function (req, res) {
   Event.findById(req.params.id, function (err, event) {
+    console.log(event);
     gcm(req.body.title,req.body.message,1,event,getUsers());
     return res.send("Success");
-  });
+  })
+  .populate('result.hostel', 'name');
+  ;
 };
 
 exports.hostelNotif = function (req, res) {
   Event.findById(req.params.id, function (err, event) {
     gcm(req.body.title,req.body.message,2,event,getUserByHostel(req.body.hostel));
     return res.send("Success");
-  });
+  })
+  .populate('result.hostel', 'name');
+  ;
 };
 
 
