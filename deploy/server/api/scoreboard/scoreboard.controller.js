@@ -104,6 +104,7 @@ exports.setup = function(req, res) {
   if(scorescore.length<1)
   {
  mongoose.connection.db.dropCollection('scoreboards', function(err, result) {});
+   var v=9;
   for(i=0;i<Hostels.length;i++)
  {
    scoreboardss.Hostel.create({name:Hostels[i]}, function (err,hostel) {
@@ -111,11 +112,13 @@ exports.setup = function(req, res) {
     // return res.status(201).json(hostel);
     scoreboardss.Scorecard.create({hostel:hostel._id}, function (err,scorecard) {
       j++;
+      v=i;
     if(err) { return handleError(res, err); }
     // return res.status(201).json(hostel); 
      
   });
   });
+  while(v!=i){require('deasync').sleep(1);}
  }
  
 
