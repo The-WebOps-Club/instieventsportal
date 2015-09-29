@@ -152,8 +152,10 @@ exports.addScore = function(req, res) {
           }
         }
       }
+      updatedEvent.updatedOn = Date();
+      console.log(Date.now());
       updatedEvent.result = req.body.result;
-      Event.update( { _id : req.params.id }, { result : req.body.result }, function(err, numberAffected, rawResponse) {
+      Event.update( { _id : req.params.id }, { result : req.body.result, updatedOn : Date() }, function(err, numberAffected, rawResponse) {
         if (err) { return handleError(res, err); }
         response = res.json(200,updatedEvent);
       });

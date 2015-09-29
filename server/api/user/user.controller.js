@@ -67,7 +67,7 @@ exports.refresh = function(req,res) {
   .exec(function(err, docs) {
 
     var options = {
-      path: 'scorecard.hostels',
+      path: 'scorecard.hostel',
       model: 'Hostel'
     };
 
