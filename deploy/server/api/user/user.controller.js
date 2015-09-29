@@ -57,40 +57,45 @@ exports.show = function (req, res, next) {
   });
 };
 
+
 exports.refresh = function(req,res) {
   Clubs.Club.find({updatedOn:{$gt: req.body.time}}, function(err,clubs){
     if(err) { return handleError(res,err); }
     
-  scoreboardss.Scoreboard.find({updatedOn:{$gt: req.body.time}})
-  .lean()
-  .populate({ path: 'scorecard' })
-  .exec(function(err, docs) {
+    scoreboardss.Scoreboard.find({updatedOn:{$gt: req.body.time}})
+    .lean()
+    .populate({ path: 'scorecard' })
+    .exec(function(err, docs) {
 
-    var options = {
-      path: 'scorecard.hostels',
-      model: 'Hostel'
-    };
+      var options = {
+        path: 'scorecard.hostel',
+        model: 'Hostel'
+      };
 
-    if (err) return res.json(500);
-    scoreboardss.Scoreboard.populate(docs, options, function (err, projects) {
-      Event.find({updatedOn:{$gt: req.body.time}})
-  .lean()
-  // .populate({ path: 'club' })
-  .exec(function(err, docs) {
-
-    var options = {
-      path: 'club',
-      model: 'Club'
-    };
-
-    if (err) return res.json(500);
-    scoreboardss.Scoreboard.populate(docs, options, function (err, events) {
+      if (err) return res.json(500);
+      scoreboardss.Scoreboard.populate(docs, options, function (err, projects) {
       
-      return res.json(200,{events:events,clubs:clubs,scoreboard:projects})
+      Event.find({updatedOn:{$gt: req.body.time}})
+      .lean()
+      // .populate({ path: 'club' })
+      .exec(function(err, docs) {
+
+        var options = [{
+          path: 'club',
+          model: 'Club'
+        }, {
+          path: 'result.hostel',
+          model: 'Hostel'
+        }];
+
+        if (err) return res.json(500);
+        scoreboardss.Scoreboard.populate(docs, options, function (err, events) {
+          
+          return res.json(200,{events:events,clubs:clubs,scoreboard:projects})
+        });
+      });
+        });
     });
-  });
-    });
-  });
   
   });  
 };

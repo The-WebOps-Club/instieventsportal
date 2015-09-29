@@ -147,13 +147,15 @@ exports.addScore = function(req, res) {
       var i,j;
       for( i=0; i < updatedEvent.result.length; i++) {
         for( j=0; j < scoreboard[0].scorecard.length; j++) {
-          if( scoreboard[0].scorecard[j].hostel == req.body.result[i].hostel ) {
+          if( scoreboard[0].scorecard[j].hostel + "" == updatedEvent.result[i].hostel + "") {
             scoreboard[0].scorecard[j].score -= updatedEvent.result[i].score;
           }
         }
       }
+      updatedEvent.updatedOn = Date();
+      console.log(Date.now());
       updatedEvent.result = req.body.result;
-      Event.update( { _id : req.params.id }, { result : req.body.result }, function(err, numberAffected, rawResponse) {
+      Event.update( { _id : req.params.id }, { result : req.body.result, updatedOn : Date() }, function(err, numberAffected, rawResponse) {
         if (err) { return handleError(res, err); }
         response = res.json(200,updatedEvent);
       });
