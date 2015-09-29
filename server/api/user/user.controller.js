@@ -85,7 +85,7 @@ exports.refresh = function(req,res) {
           model: 'Club'
         }, {
           path: 'result.hostel',
-          model: 'Hostels'
+          model: 'Hostel'
         }];
 
         if (err) return res.json(500);
